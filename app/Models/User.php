@@ -23,6 +23,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'client_id',
+        'branch_id',
+        'designation',
+        'phone',
     ];
 
     /**
@@ -53,5 +57,17 @@ class User extends Authenticatable
                 folder: 'public/images/profile_pictures'
             ),
         ];
+    }
+    public function client(){
+        return $this->belongsTo(Client::class,'managing_person_id');
+    }
+    public function branch(){
+        return $this->belongsTo(Branch::class);
+    }
+    public function leads(){
+        return $this->hasMany(Lead::class);
+    }
+    public function followups(){
+        return $this->hasMany(Followup::class);
     }
 }
