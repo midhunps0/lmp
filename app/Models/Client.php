@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Client extends Model
+class Client extends Authenticatable
 {
     use HasFactory;
     protected $fillable = ['name','phone','address','email',
@@ -24,7 +25,7 @@ class Client extends Model
         return $this->hasOne(Stage::class);
     }
     public function segments(){
-        return $this->hasMany(Segment::class);
+        return $this->hasOne(Segment::class);
     }
     public function templates(){
         return $this->hasMany(Template::class);
@@ -37,6 +38,12 @@ class Client extends Model
     }
     public function leads(){
         return $this->hasMany(Lead::class);
+    }
+    public function sources(){
+        return $this->belongsToMany(Source::class,'clients_sources');
+    }
+    public function tags(){
+        return $this->belongsToMany(Tag::class,'clients_tags');
     }
 
 }

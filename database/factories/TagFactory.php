@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Stage>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tag>
  */
-class StageFactory extends Factory
+class TagFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,8 +17,7 @@ class StageFactory extends Factory
     public function definition(): array
     {
         return [
-            
-            'stages'=>fake()->randomElement(["Created","Enquiry","lead","folllowup","cancelled","approved"]),
+            'tags'=>fake()->randomElement(['Advertisements','Consulting','Social media'])
         ];
     }
 }

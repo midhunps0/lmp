@@ -2,23 +2,22 @@
 
 namespace Database\Seeders;
 
-use App\Models\Segment;
+use App\Models\Source;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SegmentSeeder extends Seeder
+class SourceSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $segments = ["Hot","Warm","Cold"];
-        
-        foreach ($segments as $segment) {
-            Segment::create([
-                'segments' => $segment,
+        $sources=['Social Media','Direct Marketing',"Consulting","Ads"];
+        foreach ($sources as $source) {
+            Source::create([
+                "sources"=>$source,
             ]);
-        }
     }
+}
 }

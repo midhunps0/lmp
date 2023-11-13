@@ -14,18 +14,22 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone');
-            $table->text('address');
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('isValid')->default(true);
-            $table->unsignedBigInteger('subscription_model_id');
-            $table->unsignedBigInteger('subscription_id');
+            $table->unsignedBigInteger('subscription_model_id')->nullable();
+            $table->unsignedBigInteger('subscription_id')->nullable();
             $table->unsignedBigInteger('managing_person_id')->nullable();
+            $table->unsignedBigInteger('stage_id')->default(1);
+            $table->unsignedBigInteger('segment_id')->default(1);
             $table->timestamp('email_verified_at')->nullable();
 
             $table->foreign('subscription_model_id')->references('id')->on('subscription_models');
             $table->foreign('subscription_id')->references('id')->on('subscriptions');
+            $table->foreign('stage_id')->references('id')->on('stages');
+            $table->foreign('segment_id')->references('id')->on('segments');
             
             $table->timestamps();
         });

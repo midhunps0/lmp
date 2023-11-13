@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('segments', function (Blueprint $table) {
+        Schema::create("clients_tags", function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
-            $table->string('segments');
-            $table->foreign('client_id')->references('id')->on('clients');
-            $table->timestamps();
-        });
+            $table->unsignedBigInteger("client_id");
+            $table->unsignedBigInteger("tag_id");
+            $table->foreign("client_id")->references("id")->on("clients")->onDelete("cascade");
+            $table->foreign("tag_id")->references("id")->on("tags")->onDelete("cascade");
+
+    });
     }
 
     /**
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('segments');
+        
     }
 };

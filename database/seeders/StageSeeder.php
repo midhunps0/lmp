@@ -14,12 +14,11 @@ class StageSeeder extends Seeder
      */
     public function run(): void
     {
-        $client = Client::inRandomOrder()->first();
-        $stages = ["Enquiry", "lead", "folllowup", "cancelled", "approved"];
+        
+        $stages = ["Created","Enquiry", "lead", "folllowup", "cancelled", "approved"];
         
         foreach ($stages as $stage) {
             Stage::create([
-                'client_id' => $client->id,
                 'stages' => $stage,
             ]);
         }

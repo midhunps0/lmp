@@ -66,14 +66,46 @@ class SidebarService implements SidebarServiceInterface
             //         ],
             //     ]
             // ],
-            // [
-            //     'type' => 'menu_item',
-            //     'title' => 'Menu Item Two',
-            //     'route' => 'home',
-            //     'route_params' => [],
-            //     'icon' => 'easyadmin::icons.plus',
-            //     'show' => $this->showRoles()
-            // ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Subscription Models',
+                'route' => 'subscriptionmodels.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showRoles()
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'All Stages',
+                'route' => 'stages.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showRoles()
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'All Segments',
+                'route' => 'segments.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showRoles()
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'All Tags',
+                'route' => 'tags.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showRoles()
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'All Sources',
+                'route' => 'sources.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showRoles()
+            ],
         ];
     }
 

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Segment;
+use App\Models\Stage;
 use App\Models\Subscription;
 use App\Models\SubscriptionModel;
 use Hash;
@@ -27,6 +29,8 @@ class ClientFactory extends Factory
             'password'=>Hash::make('password'),
             'subscription_model_id'=>SubscriptionModel::inRandomOrder()->first()->id,
             'subscription_id'=>Subscription::inRandomOrder()->first()->id,
+            'stage_id'=>Stage::inRandomOrder()->first()->id,
+            'segment_id'=>Segment::inRandomOrder()->first()->id,
         ];
     }
 }

@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SegmentController;
+use App\Http\Controllers\SourceController;
+use App\Http\Controllers\StageController;
+use App\Http\Controllers\SubscriptionModelController;
+use App\Http\Controllers\TagController;
+use App\Models\SubscriptionModel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProfileController;
@@ -33,6 +40,30 @@ Route::middleware('auth')->group(function () {
     RouteHelper::getEasyRoutes(
         modelName: 'AppSetting',
         controller: AppSettingsController::class
+    );
+    RouteHelper::getEasyRoutes(
+        modelName:'SubscriptionModel',
+        controller: SubscriptionModelController::class
+    );
+    RouteHelper::getEasyRoutes(
+        modelName:'Stage',
+        controller: StageController::class
+    );
+    RouteHelper::getEasyRoutes(
+        modelName:'Segment',
+        controller: SegmentController::class
+    );
+    RouteHelper::getEasyRoutes(
+        modelName:'Tag',
+        controller: TagController::class
+    );
+    RouteHelper::getEasyRoutes(
+        modelName:'Source',
+        controller: SourceController::class
+    );
+    RouteHelper::getEasyRoutes(
+        modelName:'Client',
+        controller: ClientController::class
     );
 
     Route::get('/roles-permissions', [RoleController::class, 'rolesPermissions'])->name('roles.permissions');

@@ -25,8 +25,7 @@ class ClientSeeder extends Seeder
         Client::factory()
         ->hasbranch(2)
         ->hasusers(10)
-        ->hasstage()
-        ->hassegments(3)
+       
         ->hastemplates()
         ->hasnotifications()
         ->haspayments()
@@ -56,8 +55,7 @@ class ClientSeeder extends Seeder
         Client::factory()
         ->hasbranch(5)
         ->hasusers(20)
-        ->hasstage()
-        ->hassegments(4)
+        
         ->hastemplates()
         ->hasnotifications()
         ->haspayments()
@@ -87,8 +85,7 @@ class ClientSeeder extends Seeder
         Client::factory()
         ->hasbranch(3)
         ->hasusers(20)
-        ->hasstage()
-        ->hassegments(2)
+        
         ->hastemplates()
         ->hasnotifications()
         ->haspayments()
@@ -118,8 +115,7 @@ class ClientSeeder extends Seeder
 
         Client::factory()
         ->hasusers(20)
-        ->hasstage()
-        ->hassegments(1)
+        
         ->hastemplates()
         ->count(35)
         ->create()
