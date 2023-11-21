@@ -26,10 +26,16 @@ class LeadFactory extends Factory
         
         return [
             'client_id'=>Client::inRandomOrder()->first()->id,
-            'branch_id'=>Branch::inRandomOrder()->first()->id,
+            'branch_id'=>function (array $attributes) {
+                $client = Client::find($attributes['client_id']);
+                return $client->branch()->inRandomOrder()->first()->id;
+            },
             'stage_id'=>Stage::inRandomOrder()->first()->id,
             'segment_id'=>Segment::inRandomOrder()->first()->id,
-            'user_id'=>User::inRandomOrder()->first()->id,
+            'user_id'=>function (array $attributes) {
+                $client = Client::find($attributes['client_id']);
+                return $client->users()->inRandomOrder()->first()->id;
+            },
             'leadable_type'=>$leadType,
             'name'=> $name,
             'notes'=>"You're notes here.."

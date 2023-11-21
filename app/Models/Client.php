@@ -12,6 +12,7 @@ class Client extends Authenticatable
     protected $fillable = ['name','phone','address','email',
     'password','isValid','subscription_model_id','subscription_id','managing_person_id'];
 
+    
     public function users(){
         return $this->hasMany(User::class);
     }
@@ -44,6 +45,13 @@ class Client extends Authenticatable
     }
     public function tags(){
         return $this->belongsToMany(Tag::class,'clients_tags');
+    }
+    public  function action(){
+        return $this->hasOne(Action::class);
+        
+    }
+    public function subscription(){
+        return $this->belongsToMany(SubscriptionModel::class,'client_subscriptions','client_id','subscription_model_id');
     }
 
 }

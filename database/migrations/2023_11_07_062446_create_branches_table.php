@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('phone');
             $table->string('email')->unique();
             $table->text('address');
-            $table->unsignedBigInteger('managing_person_id')->nullable();
             $table->timestamps();
         });
     }

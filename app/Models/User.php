@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Modules\Ynotz\AccessControl\Models\Permission;
 use Modules\Ynotz\AccessControl\Traits\WithRoles;
 use Modules\Ynotz\MediaManager\Traits\OwnsMedia;
+use App\Scopes\allScopes;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, WithRoles, OwnsMedia;
+    use HasApiTokens, HasFactory, Notifiable, WithRoles, OwnsMedia, allScopes;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +27,7 @@ class User extends Authenticatable
         'password',
         'client_id',
         'branch_id',
-        'designation',
+        'designation_id',
         'phone',
     ];
 
@@ -70,4 +72,8 @@ class User extends Authenticatable
     public function followups(){
         return $this->hasMany(Followup::class);
     }
+   
+   
+
+   
 }

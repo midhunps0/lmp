@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\allScopes;
+use Modules\Ynotz\MediaManager\Traits\OwnsMedia;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 class Branch extends Model
 {
     use HasFactory;
+    use allScopes;
+    use OwnsMedia;
     protected $fillable = ['client_id','name','phone','email','address'];
 
     public function users(){
@@ -22,4 +28,25 @@ class Branch extends Model
     public function leads(){
         return $this->hasMany(Lead::class);
     }
+
+    public function getMediaStorage(): array
+    {
+        return[
+            'image'=>[
+                'disk'=>'public',
+                'folder'=>'images'
+            ]
+        ];
+    }
+
+    public function image(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                return $this->getSingleMediaForEAForm('image');
+            }
+        );
+    }
+
+   
 }

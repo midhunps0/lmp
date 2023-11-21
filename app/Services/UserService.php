@@ -1,11 +1,13 @@
 <?php
 namespace App\Services;
 
+use App\Models\Client;
 use App\Models\User;
 use App\Models\District;
 use App\Services\RoleService;
 use Illuminate\Support\Facades\Hash;
 use Modules\Ynotz\AccessControl\Models\Role;
+use Modules\Ynotz\EasyAdmin\RenderDataFormats\ShowPageData;
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\AuditLog\Events\BusinessActionEvent;
@@ -33,7 +35,8 @@ class UserService implements ModelViewConnector {
                 'filter_column' => 'id',
                 'sort_column' => 'id',
             ],
-            'district' => [
+            
+            'client'=>[
                 'search_column' => 'id',
                 'filter_column' => 'id',
                 'sort_column' => 'id',
@@ -53,7 +56,8 @@ class UserService implements ModelViewConnector {
         )->addHeaderColumn(
             title: 'Role',
             filter: ['key' => 'roles', 'options' => Role::all()->pluck('name', 'id')]
-        )->addHeaderColumn(
+        )
+        ->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
     }
@@ -62,6 +66,7 @@ class UserService implements ModelViewConnector {
     {
         return $this->indexTable->addColumn(
             fields: ['name'],
+            //link:['route'=>'users.show','key'=>'id']
         )->addColumn(
             fields: ['name'],
             relation: 'roles',
@@ -73,22 +78,21 @@ class UserService implements ModelViewConnector {
 
     public function getAdvanceSearchFields(): array
     {
-        return [];
         return $this->indexTable->addSearchField(
             key: 'name',
             displayText: 'Name',
             valueType: 'string',
         )->getAdvSearchFields();
-        return [
-            'name' => [
-                'key' => 'name',
-                'text' => 'Name',
-                'type' => 'string', // numeric|string|list_numeric|list_string
-                'inputType' => 'text', // text|select
-                // 'options' => [],
-                // 'optionsType' => ''  // 'key_value' or 'value_only'
-            ]
-        ];
+        // return [
+        //     'name' => [
+        //         'key' => 'name',
+        //         'text' => 'Name',
+        //         'type' => 'string', // numeric|string|list_numeric|list_string
+        //         'inputType' => 'text', // text|select
+        //         // 'options' => [],
+        //         // 'optionsType' => ''  // 'key_value' or 'value_only'
+        //     ]
+        // ];
     }
 
     public function getDownloadCols(): array
@@ -185,18 +189,40 @@ class UserService implements ModelViewConnector {
 
     private function getQuery()
     {
-        return $this->modelClass::query()->with([
-            'roles' => function ($query) {
-                $query->select('id', 'name');
-            }
-        ]);
-    }
 
+        $result= $this->modelClass::userClientBranch()->withRoles();
+        return $result;
+
+
+         // if(auth()->user()->client_id){
+        //     return $this->modelClass::query()
+        //     ->where('client_id',auth()->user()->client_id)
+        //     ->where('branch_id',auth()->user()->branch_id)
+        //     ->with([
+        //         'roles' => function ($query) {
+        //         $query->select('id', 'name');
+        //     }
+        //     ]);
+        // }
+        // else{
+        //     return $this->modelClass::query()
+        //     ->with([
+        //         'roles' => function ($query) {
+        //         $query->select('id', 'name');
+        //     }
+        //     ]);
+        // }
+    }
+    public function getAllUsers()
+    {
+        return $this->getQuery()->get();
+    }
+ 
     public function getStoreValidationRules(): array
     {
         return [
             'name' => ['required', 'string'],
-             'username' => ['required', 'string'],
+            // 'username' => ['required', 'string'],
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
             'roles.*' => ['required'],
@@ -213,9 +239,10 @@ class UserService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
-        $data['district_id'] = $data['district'];
-        unset($data['district']);
-        $data['password'] = Hash::make($data['password']);
+       if(auth()->user()->client_id){
+        $data['client_id']=auth()->user()->client_id;
+        $data['branch_id']=auth()->user()->branch_id;
+       }
 
         return $data;
     }
@@ -252,6 +279,10 @@ class UserService implements ModelViewConnector {
             $instance,
             'Updated User: '.$instance->name.', id: '.$instance->id,
         );
+    }
+    public function getShowPageData($id):ShowPageData
+    {
+        return new ShowPageData("User",User::find($id));
     }
 }
 

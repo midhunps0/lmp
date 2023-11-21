@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\PriorityLevel;
 use App\Models\Segment;
 use App\Models\Stage;
 use App\Models\Subscription;
@@ -26,9 +27,7 @@ class ClientFactory extends Factory
             'phone'=>fake()->phoneNumber,
             'address'=>fake()->address,
             'email'=>fake()->unique()->safeEmail,
-            'password'=>Hash::make('password'),
-            'subscription_model_id'=>SubscriptionModel::inRandomOrder()->first()->id,
-            'subscription_id'=>Subscription::inRandomOrder()->first()->id,
+            'prioritry_level_id'=>PriorityLevel::inRandomOrder()->first()->id,
             'stage_id'=>Stage::inRandomOrder()->first()->id,
             'segment_id'=>Segment::inRandomOrder()->first()->id,
         ];

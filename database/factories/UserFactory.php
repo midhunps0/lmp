@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Branch;
 use App\Models\Client;
+use App\Models\Designation;
+use Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -19,16 +21,20 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $client=Client::inRandomOrder()->first();
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => fake()->name,
+            'email' => fake()->email,
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => Hash::make('abcd1234'),
             'remember_token' => Str::random(10),
 
-            'client_id'=>Client::inRandomOrder()->first()->id,
-            'branch_id'=>Branch::inRandomOrder()->first()->id,
-            'designation'=>fake()->randomElement(["Manager","Executives"]),
+            'client_id'=>$client->id,
+            'branch_id'=> function (array $attributes) {
+                $client = Client::find($attributes['client_id']);
+                return $client->branch()->inRandomOrder()->first()->id;
+            },
+            'designation_id'=>Designation::inRandomOrder()->first()->id,
             'phone'=>fake()->phoneNumber,
             
         ];

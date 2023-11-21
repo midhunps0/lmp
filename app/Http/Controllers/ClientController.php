@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use App\Models\User;
 use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Modules\Ynotz\EasyAdmin\Traits\HasMVConnector;
@@ -24,5 +26,24 @@ class ClientController extends SmartController
         // $this->editView = 'easyadmin::admin.form';
         // $this->itemsCount = 10;
         // $this->resultsName = 'results';
+    }
+   
+    public function registerClient(Request $request) {
+  
+        $client = Client::create([
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            'address' => $request->input('address'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+        ]);
+
+        $user = new User([
+            'name' => $request->input('name'), 
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+        ]);
+
+        $client->users()->save($user);
     }
 }

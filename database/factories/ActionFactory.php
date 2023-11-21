@@ -1,17 +1,17 @@
 <?php
 
 namespace Database\Factories;
-
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Branch>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Action>
  */
-class BranchFactory extends Factory
+class ActionFactory extends Factory
 {
     /**
      * Define the model's default state.
+     * 
      *
      * @return array<string, mixed>
      */
@@ -19,10 +19,8 @@ class BranchFactory extends Factory
     {
         return [
             'client_id'=>Client::inRandomOrder()->first()->id,
-            'name'=>fake()->unique()->city,
-            'phone'=>fake()->phoneNumber,
-            'email'=>fake()->unique()->companyEmail,
-            'address'=>fake()->streetAddress
+            'name'=>fake()->randomElement(["Followup started","Appoinments scheduled","lead created"]),
+            'location'=>fake()->address
         ];
     }
 }

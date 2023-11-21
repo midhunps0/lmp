@@ -11,7 +11,8 @@ class SubscriptionModel extends Model
     protected $fillable = ["model","fee"];
     public static array $models=["Silver","Gold","Platinum"];
 
-    public function subscription(){
-        return $this->hasMany(Subscription::class);
+    public function clients(){
+        return $this->belongsToMany(Client::class,'client_subscriptions','subscription_model_id','client_id');
     }
+    
 }

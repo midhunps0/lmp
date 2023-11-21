@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Scopes\allScopes;
 class Lead extends Model
 {
     use HasFactory;
+    use allScopes;
     public function clients(){
         return $this->belongsTo(Client::class);
     }
@@ -26,13 +27,14 @@ class Lead extends Model
     public function followups(){
         return $this->hasMany(Followup::class);
     }
-    public function appoiments(){
-        return $this->hasMany(Appoiment::class);
-    }
+   
     public function contacts(){
         return $this->hasMany(Contact::class);
     }
     public function chats(){
         return $this->hasMany(Chat::class);
+    }
+    public function leadtags(){
+        return $this->belongsToMany(Tag::class,'leads_tags');
     }
 }

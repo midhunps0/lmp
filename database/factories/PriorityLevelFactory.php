@@ -1,15 +1,13 @@
 <?php
 
 namespace Database\Factories;
-
 use App\Models\Client;
-use App\Models\Subscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Payment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PriorityLevel>
  */
-class PaymentFactory extends Factory
+class PriorityLevelFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,11 +16,10 @@ class PaymentFactory extends Factory
      */
     public function definition(): array
     {
-        
         return [
-            'client_id'=>Client::inRandomOrder()->first()->id,
+            
+            'level'=>fake()->randomElements(["low","medium","heigh"]),
 
-            'amount'=>'100',
         ];
     }
 }

@@ -13,21 +13,18 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
-            $table->unsignedBigInteger('branch_id');
-            $table->unsignedBigInteger('stage_id');
-            $table->unsignedBigInteger('segment_id');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('client_id')->constrained('clients');
+            $table->foreignId('branch_id')->constrained('branches');
+            $table->foreignId('stage_id')->constrained('stages');
+            $table->foreignId('segment_id')->constrained('segments');
+            $table->foreignId('user_id')->constrained('users');
+            
 
             $table->string('name');
             $table->enum('leadable_type',["Individual","Business"]);
             $table->string('notes');
 
-            $table->foreign('client_id')->references('id')->on('clients');
-            $table->foreign('branch_id')->references('id')->on('branches');
-            $table->foreign('stage_id')->references('id')->on('stages');
-            $table->foreign('segment_id')->references('id')->on('segments');
-            $table->foreign('user_id')->references('id')->on('users');
+           
             $table->timestamps();
         });
     }

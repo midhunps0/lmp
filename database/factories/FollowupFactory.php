@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\Action;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,11 +19,19 @@ class FollowupFactory extends Factory
      */
     public function definition(): array
     {
+       
+        $lead = Lead::inRandomOrder()->first();
+        //$user = $lead::users()->inRandomOrder()->first();
+    
         return [
-            'lead_id'=>Lead::inRandomOrder()->first()->id,
-            'user_id'=>User::inRandomOrder()->first()->id,
-            'scheduled_date'=>fake()->dateTimeBetween(now(), now()->addDays(5)),
-            'actual_date'=>fake()->dateTimeBetween(now()->addDays(5), now()->addDays(15)),
+            'lead_id' =>  $lead->id,
+            'user_id' =>  $lead->user_id,
+            'created_by' => $lead->user_id,
+            'action_id' =>   Action::inRandomOrder()->first()->id,
+            'scheduled_date' => now()->addDays(random_int(0, 5)),
+            'actual_date' => now()->addDays(random_int(5, 15)),
+            'next_followup_date'=> now()->addDays(random_int(16, 30)),
         ];
     }
+
 }

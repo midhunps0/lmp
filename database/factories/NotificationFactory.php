@@ -17,9 +17,14 @@ class NotificationFactory extends Factory
      */
     public function definition(): array
     {
+        $client = Client::inRandomOrder()->first();
+        $user = $client->users()->inRandomOrder()->first();
+        
         return [
-            'client_id'=>Client::inRandomOrder()->first()->id,
-            'message'=>"You had 3 unread messages",
+            'client_id' => $client->id,
+            'user_id' => $user->id,
+            'message' => "You have 3 unread messages",
         ];
+        
     }
 }

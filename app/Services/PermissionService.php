@@ -56,7 +56,7 @@ class PermissionService implements ModelViewConnector {
     public function getCreatePageData(): CreatePageData
     {
         return new CreatePageData(
-            title: 'Roles',
+            title: 'Permissions',
             form: FormHelper::makeForm(
                 title: 'Create Permission',
                 id: 'form_permission_create',
@@ -71,7 +71,7 @@ class PermissionService implements ModelViewConnector {
     public function getEditPageData($id): EditPageData
     {
         return new EditPageData(
-            title: 'Roles',
+            title: 'Permissions',
             form: FormHelper::makeEditForm(
                 title: 'Edit Permission',
                 id: 'form_permission_create',

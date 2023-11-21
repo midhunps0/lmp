@@ -13,11 +13,7 @@ return new class extends Migration
     {
         Schema::create("clients_tags", function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("client_id");
-            $table->unsignedBigInteger("tag_id");
-            $table->foreign("client_id")->references("id")->on("clients")->onDelete("cascade");
-            $table->foreign("tag_id")->references("id")->on("tags")->onDelete("cascade");
-
+           $table->string('name');
     });
     }
 

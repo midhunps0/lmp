@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
+            $table->foreignId('user_id')->constrained('users');
             $table->text('message');
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreignId('client_id')->constrained('clients');
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ class SidebarService implements SidebarServiceInterface
                         'icon' => 'easyadmin::icons.users',
                         'show' => $this->showRoles()
                     ],
+                    
                     [
                         'type' => 'menu_item',
                         'title' => 'Roles',
@@ -49,7 +50,8 @@ class SidebarService implements SidebarServiceInterface
                     ],
                 ]
             ],
-
+    
+            
             // [
             //     'type' => 'menu_section',
             //     'title' => 'Menu Group',
@@ -72,7 +74,7 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'subscriptionmodels.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showRoles()
+                'show' => $this->showSystemAdmin()
             ],
             [
                 'type' => 'menu_item',
@@ -80,7 +82,7 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'stages.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showRoles()
+                'show' => $this->showSystemAdmin()
             ],
             [
                 'type' => 'menu_item',
@@ -88,7 +90,7 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'segments.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showRoles()
+                'show' => $this->showSystemAdmin()
             ],
             [
                 'type' => 'menu_item',
@@ -96,7 +98,7 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'tags.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showRoles()
+                'show' => $this->showSystemAdmin()
             ],
             [
                 'type' => 'menu_item',
@@ -104,7 +106,31 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'sources.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showRoles()
+                'show' => $this->showSystemAdmin()
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'All Clients',
+                'route' => 'clients.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showSystemAdmin()
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Branches',
+                'route' => 'branches.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.view_on',
+                'show' => $this->showAllBranches()
+            ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Leads',
+                'route' => 'leads.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.view_on',
+                'show' => $this->showLeads()
             ],
         ];
     }
@@ -120,6 +146,23 @@ class SidebarService implements SidebarServiceInterface
     private function showPermissions()
     {
         return auth()->check();
+    }
+    private function showSystemAdmin()
+    {
+        return auth()->user()->hasPermissionTo('Administrative'); 
+    }
+    private function showAllBranches()
+    {
+        
+        return auth()->user()->hasPermissionTo('Branch-Create');
+       
+    }
+    private function showUsersPerClientes(){
+        return auth()->user()->hasPermissionTo("User-Create");
+    }
+
+    private function showLeads(){
+        return auth()->user()->hasPermissionTo("Lead-Create");
     }
 }
 ?>

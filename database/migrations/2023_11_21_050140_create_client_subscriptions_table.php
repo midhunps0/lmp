@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
+        Schema::create('client_subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('subscription_model_id');
+            $table->foreignId('client_id')->constrained('clients');
+            $table->foreignId('subscription_model_id')->constrained('subscription_models');
             $table->dateTime('valid_till');
-            $table->foreign('subscription_model_id')->references('id')->on('subscription_models');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscriptions');
+        Schema::dropIfExists('client_subscriptions');
     }
 };

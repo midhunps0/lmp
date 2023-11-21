@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('followups', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('lead_id');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('lead_id')->constrained('leads');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('action_id')->constrained('actions');
             $table->dateTime('scheduled_date');
             $table->dateTime('actual_date');
-
-            $table->foreign('lead_id')->references('id')->on('leads');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->dateTime('next_followup_date');
             $table->timestamps();
         });
     }
