@@ -2,10 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Branch;
 use App\Models\User;
 use App\Models\Client;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Designation;
+use Illuminate\Support\Str;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserSeeder extends Seeder
@@ -42,7 +45,9 @@ class UserSeeder extends Seeder
             ]
         );
         $u->assignRole('Admin');
+
         $clients=Client::all();
+        
         foreach($clients as $client){
            $clientAdmin= User::create([
             'name' => 'client'.$client->id.'user',
@@ -52,14 +57,30 @@ class UserSeeder extends Seeder
             'remember_token' => Str::random(10),
 
             'client_id'=>$client->id,
-            'branch_id'=> function (array $attributes) {
-                $client = Client::find($attributes['client_id']);
-                return $client->branch()->inRandomOrder()->first()->id;
-            },
+            'branch_id'=>null,
             'designation_id'=>Designation::inRandomOrder()->first()->id,
             'phone'=>fake()->phoneNumber,
            ]);
            $clientAdmin->assignRole('Client Admin');
+
+           $branches = $client->branch()->get();
+
+           foreach($branches as $branch){
+                $branchAdmin= User::create([
+                    'name' => 'Branch manger '.$branch->id.' of client '.$client->id,
+                    'email' => 'branch'.$branch->id.'ofclient'.$client->id.'user@gmail.com',
+                    'email_verified_at' => now(),
+                    'password' => Hash::make('abcd1234'),
+                    'remember_token' => Str::random(10),
+        
+                    'client_id'=>$client->id,
+                    'branch_id'=>$branch->id,
+                    'designation_id'=>Designation::inRandomOrder()->first()->id,
+                    'phone'=>fake()->phoneNumber,
+                ]);
+                $branchAdmin->assignRole('Branch Admin');
+            }
         }
+    
     }
 }

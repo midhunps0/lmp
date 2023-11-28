@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Models\Branch;
 use App\Models\Client;
 use App\Models\Designation;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

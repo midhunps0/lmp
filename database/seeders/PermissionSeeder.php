@@ -69,7 +69,17 @@ class PermissionSeeder extends Seeder
             "Email-View",
             "Email-Create",
             "Email-Update",
-            "Email-Delete",            
+            "Email-Delete",
+            
+            "Segment-View",
+            "Segment-Create",
+            "Segment-Update",
+            "Segment-Delete",
+
+            "Tag-View",
+            "Tag-Create",
+            "Tag-Update",
+            "Tag-Delete",
         ];
 
         foreach ($allPermissions as $permission) {

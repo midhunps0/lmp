@@ -82,7 +82,7 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'stages.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showSystemAdmin()
+                'show' => $this->showStages()
             ],
             [
                 'type' => 'menu_item',
@@ -90,23 +90,24 @@ class SidebarService implements SidebarServiceInterface
                 'route' => 'segments.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showSystemAdmin()
+                'show' => $this->showSegments()
             ],
             [
                 'type' => 'menu_item',
-                'title' => 'All Tags',
+                'title' => 'Tags',
                 'route' => 'tags.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showSystemAdmin()
+                'show' => $this->showTags()
             ],
+            
             [
                 'type' => 'menu_item',
                 'title' => 'All Sources',
                 'route' => 'sources.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.plus',
-                'show' => $this->showSystemAdmin()
+                'show' => $this->showSources()
             ],
             [
                 'type' => 'menu_item',
@@ -121,7 +122,7 @@ class SidebarService implements SidebarServiceInterface
                 'title' => 'Branches',
                 'route' => 'branches.index',
                 'route_params' => [],
-                'icon' => 'easyadmin::icons.view_on',
+                'icon' => 'easyadmin::icons.plus',
                 'show' => $this->showAllBranches()
             ],
             [
@@ -129,9 +130,18 @@ class SidebarService implements SidebarServiceInterface
                 'title' => 'Leads',
                 'route' => 'leads.index',
                 'route_params' => [],
-                'icon' => 'easyadmin::icons.view_on',
+                'icon' => 'easyadmin::icons.plus',
                 'show' => $this->showLeads()
             ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Followups',
+                'route' => 'followups.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showFollowUps()
+            ],
+            
         ];
     }
 
@@ -163,6 +173,25 @@ class SidebarService implements SidebarServiceInterface
 
     private function showLeads(){
         return auth()->user()->hasPermissionTo("Lead-Create");
+    }
+    private function showFollowUps(){
+        return auth()->user()->hasPermissionTo("Followup-Create");
+    }
+
+    private function showSegments(){
+        return auth()->user()->hasPermissionTo("Segment-Create");
+    }
+
+    private function showStages(){
+        return auth()->user()->hasPermissionTo("Stage-Create");
+    }
+
+    private function showSources(){
+        return auth()->user()->hasPermissionTo("Source-Create");
+    }
+
+    private function showTags(){
+        return auth()->user()->hasPermissionTo("Tag-Create");
     }
 }
 ?>

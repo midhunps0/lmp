@@ -6,6 +6,7 @@ use App\Models\Followup;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Lead;
+use App\Models\Action;
 
 class FollowupSeeder extends Seeder
 {
@@ -17,11 +18,15 @@ class FollowupSeeder extends Seeder
         $leads=Lead::all();
        
         foreach ($leads as $lead){
-            $lead->followups()->saveMany(
-                Followup::factory(10)->create()->each(function ($followup) use ($lead) {
-                        $followup->update(['lead_id' => $lead->id]);
-                    })
-                );
+           Followup::create([
+            'lead_id' =>  $lead->id,
+            'user_id' =>  $lead->user_id,
+            'created_by' => $lead->user_id,
+            'action_id' =>   Action::inRandomOrder()->first()->id,
+            'scheduled_date' => now()->addDays(random_int(0, 5)),
+            'actual_date' => now()->addDays(random_int(5, 15)),
+            'next_followup_date'=> now()->addDays(random_int(16, 30)),
+           ]);
         }
     }
 }

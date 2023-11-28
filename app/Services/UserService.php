@@ -190,7 +190,11 @@ class UserService implements ModelViewConnector {
     private function getQuery()
     {
 
-        $result= $this->modelClass::userClientBranch()->withRoles();
+        $result= $this->modelClass::userClientBranch()->with([
+            'roles' => function ($query) {
+                $query->select('id', 'name');
+            }
+        ]);
         return $result;
 
 
@@ -284,6 +288,8 @@ class UserService implements ModelViewConnector {
     {
         return new ShowPageData("User",User::find($id));
     }
+
+   
 }
 
 ?>

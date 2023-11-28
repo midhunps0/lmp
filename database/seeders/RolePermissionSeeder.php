@@ -25,33 +25,56 @@ class RolePermissionSeeder extends Seeder
         $rolePermissions = [
             "System Admin" => [
                 "Administrative",
-                
+                "Stage-Create",
+                "Source-Create",
+                "Segement-Create",
+                "Tag-Create"
             ],
             "Admin" => [
                 "Administrative",
                 "Client-View",
                 "Branch-View"
-                
             ],
             "Client Admin" => [
-                "Client-View",
-                "Client-Create",
+                "User-View",
+                "User-Create",
+                "User-Update",
+                "User-Delete",
+
                 "Branch-View",
-                
-            ],
-            "Branch Admin"=>[
+                "Branch-Create",
+
                 "Lead-View",
                 "Lead-Create",
                 "Lead-Update",
+                "Lead-Delete",
+
+                "Stage-Create",
+                "Source-Create",
+                "Segment-Create",
+                "Tag-Create",
+            ],
+
+            "Branch Admin"=>[
+
+                "Lead-View",
+                "Lead-Create",
+                "Lead-Update",
+                "Lead-Delete",
+
                 "Followup-View",
-                "Followup-Create"
+                "Followup-Create",
+                "Followup-Update",
+                "Followup-Delete",
             ],
             "Executive"=>[
+
                 "Lead-View",
                 "Lead-Create",
                 "Lead-Update",
                 "Followup-View",
-                "Followup-Create"
+                "Followup-Create",
+                "Followup-Update",
             ]
            
         ];

@@ -12,4 +12,7 @@ class Stage extends Model
     public function clients(){
         return $this->belongsToMany(Client::class);
     }
+    public function leads(){
+        return $this->hasMany(Lead::class);
+    }
 }

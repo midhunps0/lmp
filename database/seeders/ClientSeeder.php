@@ -27,7 +27,7 @@ class ClientSeeder extends Seeder
 
         Client::factory()
         ->hasbranch(2)
-        ->hasusers(10)
+        ->hasusers(20)
         ->hastemplates()
         ->hasnotifications()
         ->haspayments()
@@ -35,15 +35,15 @@ class ClientSeeder extends Seeder
         ->create()
         ->each(function ($client) {
             $client->action()->save( Action::factory()->create() );
-            $client->branch->each(function ($branch) use ($client){
-                $branchAdmin = $branch->users->first();
-                $branchAdmin->assignRole('Branch Admin');
-                $branch->users->each(function ($user) use ($branchAdmin) {
-                    if ($user->id !== $branchAdmin->id) {
-                        $user->assignRole('Executive');
-                    }
-                });
-            });
+            // $client->branch->each(function ($branch) use ($client){
+            //     $branchAdmin = $branch->users->first();
+            //     $branchAdmin->assignRole('Branch Admin');
+            //     $branch->users->each(function ($user) use ($branchAdmin) {
+            //         if ($user->id !== $branchAdmin->id) {
+            //             $user->assignRole('Executive');
+            //         }
+            //     });
+            // });
 
             $client->users->each(function ($user) {
                 $user->leads()->saveMany(

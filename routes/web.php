@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\ImageGalleryController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\SegmentController;
@@ -78,6 +79,10 @@ Route::middleware('auth')->group(function () {
         controller:LeadController ::class
     );
    
+    RouteHelper::getEasyRoutes(
+        modelName:'Followup',
+        controller:FollowupController::class
+    );
 
     Route::get('/roles-permissions', [RoleController::class, 'rolesPermissions'])->name('roles.permissions');
     Route::post('/roles/permission-update', [RoleController::class, 'permissionUpdate'])->name('roles.update_permissions');

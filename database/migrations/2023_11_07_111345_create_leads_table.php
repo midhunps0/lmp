@@ -21,7 +21,7 @@ return new class extends Migration
             
 
             $table->string('name');
-            $table->enum('leadable_type',["Individual","Business"]);
+            $table->string('leadable_type');
             $table->string('notes');
 
            

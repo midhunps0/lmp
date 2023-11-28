@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\Lead;
+use App\Models\Followup;
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -10,14 +10,15 @@ use Modules\Ynotz\EasyAdmin\RenderDataFormats\CreatePageData;
 use Modules\Ynotz\EasyAdmin\RenderDataFormats\EditPageData;
 use Modules\Ynotz\EasyAdmin\Services\ColumnLayout;
 use Modules\Ynotz\EasyAdmin\Services\RowLayout;
+use Carbon\Carbon;
 
-class LeadService implements ModelViewConnector {
+class FollowupService implements ModelViewConnector {
     use IsModelViewConnector;
     private $indexTable;
 
     public function __construct()
     {
-        $this->modelClass = Lead::class;
+        $this->modelClass = Followup::class;
         $this->indexTable = new IndexTable();
         $this->selectionEnabled = true;
 
@@ -40,31 +41,39 @@ class LeadService implements ModelViewConnector {
 
     protected function relations()
     {
-       
+     
         return [
-            'stage' => [
+            'lead' => [
                 'search_column' => 'id',
                 'filter_column' => 'id',
                 'sort_column' => 'id',
             ],
         ];
+        //     'reviewScore' => [
+        //         'search_column' => 'score',
+        //         'filter_column' => 'id',
+        //         'sort_column' => 'id',
+        //     ],
+        // ];
     }
     protected function getPageTitle(): string
     {
-        return "Leads";
+        return "Followups";
     }
 
     protected function getIndexHeaders(): array
     {
+        
         return $this->indexTable->addHeaderColumn(
             title: 'Lead Name',
-            sort: ['key' => 'name'],
+            sort: ['key' => 'lead_id'],
         )->addHeaderColumn(
-            title: 'Lead Type',
-            filter: ['key' => 'leadable_type', 'options' => Lead::distinct('leadable_type')->pluck('leadable_type')->toArray()],
-        )->addHeaderColumn(
-            title: 'Stage',
+            title: 'Scheduled Date',
             
+        )->addHeaderColumn(
+            title: 'Actual Date',
+        )->addHeaderColumn(
+                title: 'Next Followup Date',
         )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
@@ -75,11 +84,14 @@ class LeadService implements ModelViewConnector {
         
         return $this->indexTable->addColumn(
             fields: ['name'],
+            relation:'lead'
         )->addColumn(
-            fields: ['leadable_type'],
+            fields: ['scheduled_date'],
         )->addColumn(
-            fields: ['stage_id'],
-            relation: 'stage',
+            fields: ['actual_date'],
+        )->addColumn(
+            fields: ['next_followup_date'],
+      
         )
         ->addActionColumn(
             editRoute: $this->getEditRoute(),
@@ -124,20 +136,20 @@ class LeadService implements ModelViewConnector {
     public function getDownloadColTitles(): array
     {
         return [
-            // 'title' => 'Title',
-            // 'author.name' => 'Author'
+            'title' => 'Title',
+            'author.name' => 'Author'
         ];
     }
 
     public function getCreatePageData(): CreatePageData
     {
         return new CreatePageData(
-            title: 'Create Lead',
+            title: 'Create Followup',
             form: FormHelper::makeForm(
-                title: 'Create Lead',
-                id: 'form_leads_create',
-                action_route: 'leads.store',
-                success_redirect_route: 'leads.index',
+                title: 'Create Followup',
+                id: 'form_followups_create',
+                action_route: 'followups.store',
+                success_redirect_route: 'followups.index',
                 items: $this->getCreateFormElements(),
                 layout: $this->buildCreateFormLayout(),
                 label_position: 'top'
@@ -148,13 +160,13 @@ class LeadService implements ModelViewConnector {
     public function getEditPageData($id): EditPageData
     {
         return new EditPageData(
-            title: 'Edit Lead',
+            title: 'Edit Followup',
             form: FormHelper::makeEditForm(
-                title: 'Edit Lead',
-                id: 'form_leads_create',
-                action_route: 'leads.update',
+                title: 'Edit Followup',
+                id: 'form_followups_create',
+                action_route: 'followups.update',
                 action_route_params: ['id' => $id],
-                success_redirect_route: 'leads.index',
+                success_redirect_route: 'followups.index',
                 items: $this->getEditFormElements(),
                 label_position: 'top'
             ),
@@ -174,32 +186,30 @@ class LeadService implements ModelViewConnector {
 
     private function formElements(): array
     {
-        return [
-            'name' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'name',
-                label: 'Lead Name',
-                properties: ['required' => true],
-            ),
-            'leadable_type' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'leadable_type',
-                label: 'Type of Lead'
-            ),
-        ];
+        return [];
+        // // Example:
+        // return [
+        //     'title' => FormHelper::makeInput(
+        //         inputType: 'text',
+        //         key: 'title',
+        //         label: 'Title',
+        //         properties: ['required' => true],
+        //     ),
+        //     'description' => FormHelper::makeTextarea(
+        //         key: 'description',
+        //         label: 'Description'
+        //     ),
+        // ];
     }
 
     private function getQuery()
     {
-        $result= $this->modelClass::DisplayingLeads()
+        return $this->modelClass::DisplayFollowups()
         ->with([
-            'stage'=>function($query){
-                $query->select('id', 'stages');
+            'lead'=>function($query){
+                $query->select('id', 'name');
             }
         ]);
-        return $result;
-
-        //return $this->modelClass::query();
         // // Example:
         // return $this->modelClass::query()->with([
         //     'author' => function ($query) {
@@ -207,25 +217,23 @@ class LeadService implements ModelViewConnector {
         //     }
         // ]);
     }
-    public function getAllLeads(){
-        return $this->getQuery()->get();
-    }
 
     public function getStoreValidationRules(): array
     {
-        
-        return [
-            'name' => ['required', 'string'],
-            'leadable_type' => ['required', 'string'],
-        ];
+        return [];
+        // // Example:
+        // return [
+        //     'title' => ['required', 'string'],
+        //     'description' => ['required', 'string'],
+        // ];
     }
 
     public function getUpdateValidationRules($id): array
     {
-        return [
-            'name' => ['required', 'string'],
-            'leadable_type' => ['required', 'string'],
-        ];
+        return [];
+        // // Example:
+        // $arr = $this->getStoreValidationRules();
+        // return $arr;
     }
 
     public function processBeforeStore(array $data): array
@@ -256,17 +264,24 @@ class LeadService implements ModelViewConnector {
 
     public function buildCreateFormLayout(): array
     {
-        
-         $layout = (new ColumnLayout())
-            ->addElements([
-                    (new RowLayout())
-                        ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('name'),
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('leadable_type'),
-                        ])
-                ]
-            );
-        return $layout->getLayout();
+        return (new ColumnLayout())->getLayout();
+        // // Example
+        //  $layout = (new ColumnLayout())
+        //     ->addElements([
+        //             (new RowLayout())
+        //                 ->addElements([
+        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('title'),
+        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('description'),
+        //                 ])
+        //         ]
+        //     );
+        // return $layout->getLayout();
+    }
+    public function covertDateIntoHumanReadableForm($dateString){
+
+        $dateTime = new DateTime($dateString);
+        return  $dateTime->format('F j, Y g:i A');
+
     }
 }
 

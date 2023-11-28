@@ -48,5 +48,21 @@ class Branch extends Model
         );
     }
 
+    public function scopeUserBranches($query){
+        if(auth()->user()->client_id){
+            if (auth()->user()->branch_id) {
+                return $query->where('id', auth()->user()->branch_id)
+                             ->orderBy('id','desc');
+            }
+            else{
+                return $query->where('client_id', auth()->user()->client_id)
+                             ->orderBy('id','desc');
+            }    
+        }
+        
+        return $query;
+        
+    }
+
    
 }
