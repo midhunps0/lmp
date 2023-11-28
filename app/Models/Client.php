@@ -9,9 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Client extends Authenticatable
 {
     use HasFactory;
-    protected $fillable = ['name','phone','address','email',
-    'password','isValid','subscription_model_id','subscription_id','managing_person_id'];
-
+    protected $guarded = [];
     
     public function users(){
         return $this->hasMany(User::class);

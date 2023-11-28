@@ -9,6 +9,7 @@ class Stage extends Model
 {
     use HasFactory;
     protected $fillable = ['stages'];
+    protected $guarded = [];
     public function clients(){
         return $this->belongsToMany(Client::class);
     }

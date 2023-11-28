@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Source extends Model
 {
     use HasFactory;
-    protected $fillable = ['sources'];
+    protected $fillable = ['sources','client_id'];
+    protected $guarded = [];
     public function client(){
         return $this->belongsTo('Client::class');
     }

@@ -173,7 +173,8 @@ class SourceService implements ModelViewConnector {
 
     private function getQuery()
     {
-        return $this->modelClass::query();
+        return $this->modelClass::query()
+        ->where('client_id',auth()->user()->client_id);
         // // Example:
         // return $this->modelClass::query()->with([
         //     'author' => function ($query) {
@@ -201,6 +202,7 @@ class SourceService implements ModelViewConnector {
     {
         // // Example:
         // $data['user_id'] = auth()->user()->id;
+        $data['client_id']=auth()->user()->client_id;
 
         return $data;
     }

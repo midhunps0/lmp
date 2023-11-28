@@ -30,9 +30,13 @@ use Modules\Ynotz\AppSettings\Http\Controllers\AppSettingsController;
 */
 
 Route::get('/', function () {
-    return redirect(route('login'));
+    return view('welcome');
 });
+Route::get('/clientRegistration',function(){
+    return view('client_registration');
+})->name('client.register');
 
+Route::post('/clientRegistration',[ClientController::class,'regsiteringNewClient'])->name('register.newClient');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

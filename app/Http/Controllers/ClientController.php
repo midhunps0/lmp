@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\PriorityLevel;
+use App\Models\Segment;
 use App\Models\User;
+use App\Models\Stage;
+use App\Models\Source;
+
 use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Modules\Ynotz\EasyAdmin\Traits\HasMVConnector;
@@ -28,22 +33,38 @@ class ClientController extends SmartController
         // $this->resultsName = 'results';
     }
    
-    public function registerClient(Request $request) {
+    public function regsiteringNewClient(Request $request) {
+
+        $defaultSources=config('default.defaultSources');
   
         $client = Client::create([
-            'name' => $request->input('name'),
+            'name' => $request->input('client_name'),
             'phone' => $request->input('phone'),
-            'address' => $request->input('address'),
+            'address' => $request->input('client_address'),
+            'email' => $request->input('organization_email'),
+            'stage_id'=>Stage::where('stages','Created')->value('id'),
+            'prioritry_level_id'=>PriorityLevel::where('level','high')->value('id'),
+            'segment_id'=>Segment::where('segments','Hot')->value('id'),
+
+        ]);
+        $clientId=$client->id;
+        $user = User::create([
+            'name' => $request->input('admin_name'), 
             'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
             'password' => bcrypt($request->input('password')),
+            'client_id'=>$clientId,
         ]);
 
-        $user = new User([
-            'name' => $request->input('name'), 
-            'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password')),
-        ]);
+        $user->assignRole('Client Admin');
+        foreach($defaultSources as $source){
+            Source::create([
+                "sources"=>$source,
+                'client_id'=>$clientId,
+            ]);
+        }
 
-        $client->users()->save($user);
+        return redirect()->route('dashboard')->with('success',"Welcome to the lead management system");
+
     }
 }

@@ -18,7 +18,7 @@ class StageSeeder extends Seeder
         $stages = ["Created","Enquiry", "lead", "folllowup", "cancelled", "approved"];
         
         foreach ($stages as $stage) {
-            Stage::create([
+            Stage::firstOrCreate([
                 'stages' => $stage,
             ]);
         }
