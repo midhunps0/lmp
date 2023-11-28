@@ -80,6 +80,11 @@ class PermissionSeeder extends Seeder
             "Tag-Create",
             "Tag-Update",
             "Tag-Delete",
+
+            "Priority-Level-View",
+            "Priority-Level-Create",
+            "Priority-Level-Update",
+            "Priority-Level-Delete",
         ];
 
         foreach ($allPermissions as $permission) {

@@ -28,7 +28,8 @@ class RolePermissionSeeder extends Seeder
                 "Stage-Create",
                 "Source-Create",
                 "Segement-Create",
-                "Tag-Create"
+                "Tag-Create",
+                "Priority-Level-Create"
             ],
             "Admin" => [
                 "Administrative",
@@ -53,6 +54,7 @@ class RolePermissionSeeder extends Seeder
                 "Source-Create",
                 "Segment-Create",
                 "Tag-Create",
+                "Priority-Level-Create"
             ],
 
             "Branch Admin"=>[
@@ -66,6 +68,7 @@ class RolePermissionSeeder extends Seeder
                 "Followup-Create",
                 "Followup-Update",
                 "Followup-Delete",
+                
             ],
             "Executive"=>[
 

@@ -61,7 +61,7 @@ class User extends Authenticatable
         ];
     }
     public function client(){
-        return $this->belongsTo(Client::class,'managing_person_id');
+        return $this->belongsTo(Client::class);
     }
     public function branch(){
         return $this->belongsTo(Branch::class);

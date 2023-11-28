@@ -41,7 +41,7 @@ class Client extends Authenticatable
         return $this->hasMany(Lead::class);
     }
     public function sources(){
-        return $this->belongsToMany(Source::class,'clients_sources');
+        return $this->hasMany(Source::class);
     }
     public function tags(){
         return $this->belongsToMany(Tag::class,'clients_tags');

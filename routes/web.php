@@ -5,6 +5,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\ImageGalleryController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\PriorityLevelController;
 use App\Http\Controllers\SegmentController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\StageController;
@@ -82,6 +83,11 @@ Route::middleware('auth')->group(function () {
     RouteHelper::getEasyRoutes(
         modelName:'Followup',
         controller:FollowupController::class
+    );
+
+    RouteHelper::getEasyRoutes(
+        modelName:'PriorityLevel',
+        controller:PriorityLevelController::class
     );
 
     Route::get('/roles-permissions', [RoleController::class, 'rolesPermissions'])->name('roles.permissions');

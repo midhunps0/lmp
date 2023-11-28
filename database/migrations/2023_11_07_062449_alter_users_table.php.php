@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sources', function (Blueprint $table) {
-            $table->id();
-            $table->string('sources')->unique();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('client_id')->nullable()->constrained('clients');
+            $table->foreignId('branch_id')->nullable()->constrained('branches');
+            $table->foreignId('designation_id')->nullable()->constrained('designations');
         });
     }
 
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sources');
+        //
     }
 };

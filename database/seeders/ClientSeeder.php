@@ -27,7 +27,7 @@ class ClientSeeder extends Seeder
 
         Client::factory()
         ->hasbranch(2)
-        ->hasusers(20)
+        ->hasusers(5)
         ->hastemplates()
         ->hasnotifications()
         ->haspayments()
@@ -47,7 +47,7 @@ class ClientSeeder extends Seeder
 
             $client->users->each(function ($user) {
                 $user->leads()->saveMany(
-                    Lead::factory(20)->create()->each(function ($lead) use ($user) {
+                    Lead::factory(5)->create()->each(function ($lead) use ($user) {
                         $lead->update(['client_id' => $user->client_id, 'branch_id' => $user->branch_id]);
                         
             

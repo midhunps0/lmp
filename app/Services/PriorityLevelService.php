@@ -1,9 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\Client;
-use App\Models\User;
-use Modules\Ynotz\EasyAdmin\RenderDataFormats\ShowPageData;
+use App\Models\PriorityLevel;
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -13,13 +11,13 @@ use Modules\Ynotz\EasyAdmin\RenderDataFormats\EditPageData;
 use Modules\Ynotz\EasyAdmin\Services\ColumnLayout;
 use Modules\Ynotz\EasyAdmin\Services\RowLayout;
 
-class ClientService implements ModelViewConnector {
+class PriorityLevelService implements ModelViewConnector {
     use IsModelViewConnector;
     private $indexTable;
-     
+
     public function __construct()
     {
-        $this->modelClass = Client::class;
+        $this->modelClass = PriorityLevel::class;
         $this->indexTable = new IndexTable();
         $this->selectionEnabled = true;
 
@@ -42,31 +40,32 @@ class ClientService implements ModelViewConnector {
 
     protected function relations()
     {
-       
-        return [
-            'users' => [
-                'search_column' => 'id',
-                'filter_column' => 'id',
-                'sort_column' => 'id',
-            ],
-            
-           
-        ];
+        return [];
+        // // Example:
+        // return [
+        //     'author' => [
+        //         'search_column' => 'id',
+        //         'filter_column' => 'id',
+        //         'sort_column' => 'id',
+        //     ],
+        //     'reviewScore' => [
+        //         'search_column' => 'score',
+        //         'filter_column' => 'id',
+        //         'sort_column' => 'id',
+        //     ],
+        // ];
     }
     protected function getPageTitle(): string
     {
-        return "Clients";
+        return "Priority Levels";
     }
 
     protected function getIndexHeaders(): array
     {
-       
+        
         return $this->indexTable->addHeaderColumn(
-            title: 'Client Name',
-            sort: ['key' => 'id'],
-        )->addHeaderColumn(
-            title: 'Managing Person',
-           // filter: ['key' => 'author', 'options' => User::all()->pluck('name', 'id')]
+            title: 'Priority Level',
+            sort: ['key' => 'level'],
         )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
@@ -74,13 +73,9 @@ class ClientService implements ModelViewConnector {
 
     protected function getIndexColumns(): array
     {
-       
+        
         return $this->indexTable->addColumn(
-            fields: ['name'],
-            //link: ['route'=>'clients.show','key'=>'id'],
-        )->addColumn(
-            fields: ['name'],
-            relation:'users',
+            fields: ['level'],
         )
         ->addActionColumn(
             editRoute: $this->getEditRoute(),
@@ -125,20 +120,20 @@ class ClientService implements ModelViewConnector {
     public function getDownloadColTitles(): array
     {
         return [
-            // 'title' => 'Title',
-            // 'author.name' => 'Author'
+            'title' => 'Title',
+            'author.name' => 'Author'
         ];
     }
 
     public function getCreatePageData(): CreatePageData
     {
         return new CreatePageData(
-            title: 'Create Client',
+            title: 'Create PriorityLevel',
             form: FormHelper::makeForm(
-                title: 'Create Client',
-                id: 'form_clients_create',
-                action_route: 'clients.store',
-                success_redirect_route: 'clients.index',
+                title: 'Create PriorityLevel',
+                id: 'form_prioritylevels_create',
+                action_route: 'prioritylevels.store',
+                success_redirect_route: 'prioritylevels.index',
                 items: $this->getCreateFormElements(),
                 layout: $this->buildCreateFormLayout(),
                 label_position: 'top'
@@ -149,13 +144,13 @@ class ClientService implements ModelViewConnector {
     public function getEditPageData($id): EditPageData
     {
         return new EditPageData(
-            title: 'Edit Client',
+            title: 'Edit PriorityLevel',
             form: FormHelper::makeEditForm(
-                title: 'Edit Client',
-                id: 'form_clients_create',
-                action_route: 'clients.update',
+                title: 'Edit PriorityLevel',
+                id: 'form_prioritylevels_create',
+                action_route: 'prioritylevels.update',
                 action_route_params: ['id' => $id],
-                success_redirect_route: 'clients.index',
+                success_redirect_route: 'prioritylevels.index',
                 items: $this->getEditFormElements(),
                 label_position: 'top'
             ),
@@ -163,58 +158,35 @@ class ClientService implements ModelViewConnector {
         );
     }
 
+    /*
+    public function getShowPageData($id): ShowPageData
+    {
+        return new ShowPageData(
+            Str::ucfirst($this->getModelShortName()),
+            $this->getQuery()->where($this->key, $id)->get()->first()
+        );
+    }
+    */
+
     private function formElements(): array
     {
-      
+        
         return [
-            'name' => FormHelper::makeInput(
+            'level' => FormHelper::makeInput(
                 inputType: 'text',
-                key: 'name',
-                label: 'Client Name',
+                key: 'level',
+                label: 'Priority Level',
                 properties: ['required' => true],
             ),
-            'address'=>FormHelper::makeTextarea(
-                key:'address',
-                label:'Address',
-                properties: ['required'=> true],
-            ),
-            'phone' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'phone',
-                label: 'Contact Number',
-                properties: ['required' => true],
-            ),
-            'email' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'email',
-                label: 'Email Id',
-                properties: ['required' => true],
-            ),
+            
         ];
     }
 
     private function getQuery()
     {
-        return $this->modelClass::query()
-        ->with([
-        'users' => function ($query) {
-            $query->select('name')
-                ->whereHas('roles', function ($subquery) {
-                    $subquery->where('name', 'Client Admin'); 
-                });
-        }
-    ]);
-        
-        // return $this->modelClass::query()->
-        // with([
-        //     'users'=>function ($query) {
-        //         $query->select('id', 'name')
-        //         ->where('client_id',$query->id && !'branch_id');
-        //     }
-        // ]);
+        return $this->modelClass::query();
         // // Example:
         // return $this->modelClass::query()->with([
-
         //     'author' => function ($query) {
         //         $query->select('id', 'name');
         //     }
@@ -223,24 +195,16 @@ class ClientService implements ModelViewConnector {
 
     public function getStoreValidationRules(): array
     {
-       
+    
         return [
-            'name' => ['required', 'string'],
-            'address' => ['required', 'string'],
-            'phone' => ['required', 'string'],
-            'email' => ['required', 'string'],
-            //'managing_person' => ['required', 'string'],
+            'level' => ['required', 'string'],
         ];
     }
 
     public function getUpdateValidationRules($id): array
     {
         return [
-            'name' => ['required', 'string'],
-            'address' => ['required', 'string'],
-            'phone' => ['required', 'string'],
-            'email' => ['required', 'string'],
-            //'managing_person' => ['required', 'string'],
+            'level' => ['required', 'string'],
         ];
     }
 
@@ -277,27 +241,12 @@ class ClientService implements ModelViewConnector {
             ->addElements([
                     (new RowLayout())
                         ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('name'),
-                            //(new ColumnLayout(width: '1/2'))->addInputSlot('managing_person'),
-                        ]),
-                    (new RowLayout())
-                        ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('address'),
-                        ]),
-                    (new RowLayout())
-                        ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('phone'),
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('email'),
-                        ]),
-                ]);
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('level'),
+                           
+                        ])
+                ]
+            );
         return $layout->getLayout();
-    }
-
-    public function getShowPageData($id):ShowPageData
-    {
-        //return ['title' => Str::ucfirst($this->getModelShortName()), 'instance' => $this->getQuery()->get()->first() ];
-        
-        return new ShowPageData("Clients",Client::find($id));
     }
 }
 

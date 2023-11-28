@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
         //$this->call(RoleSeeder::class);
         $this->call(StageSeeder::class);
         $this->call(SegmentSeeder::class);
-        $this->call(SourceSeeder::class);
         $this->call(TagSeeder::class);
         $this->call(SubscriptionModelSeeder::class);
         $this->call(DesignationSeeder::class);
         $this->call(PriorityLevelSeeder::class);
         $this->call(ClientSeeder::class);
+        $this->call(SourceSeeder::class);
         $this->call(ActionSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(FollowupSeeder::class);

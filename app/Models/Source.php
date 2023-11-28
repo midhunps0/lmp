@@ -10,6 +10,6 @@ class Source extends Model
     use HasFactory;
     protected $fillable = ['sources'];
     public function client(){
-        return $this->belongsToMany(Client::class,'clients_sources');
+        return $this->belongsTo('Client::class');
     }
 }

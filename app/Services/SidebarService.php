@@ -111,6 +111,14 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
+                'title' => 'Priority Level',
+                'route' => 'prioritylevels.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showPriorityLevels()
+            ],
+            [
+                'type' => 'menu_item',
                 'title' => 'All Clients',
                 'route' => 'clients.index',
                 'route_params' => [],
@@ -192,6 +200,10 @@ class SidebarService implements SidebarServiceInterface
 
     private function showTags(){
         return auth()->user()->hasPermissionTo("Tag-Create");
+    }
+
+    private function showPriorityLevels(){
+        return auth()->user()->hasPermissionTo("Priority-Level-Create");
     }
 }
 ?>
