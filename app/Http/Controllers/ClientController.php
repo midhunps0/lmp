@@ -13,6 +13,9 @@ use App\Services\ClientService;
 use Illuminate\Http\Request;
 use Modules\Ynotz\EasyAdmin\Traits\HasMVConnector;
 use Modules\Ynotz\SmartPages\Http\Controllers\SmartController;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
 
 class ClientController extends SmartController
 {
@@ -38,6 +41,7 @@ class ClientController extends SmartController
         $defaultSources=config('default.defaultSources');
   
         $client = Client::create([
+        
             'name' => $request->input('client_name'),
             'phone' => $request->input('phone'),
             'address' => $request->input('client_address'),
@@ -47,24 +51,27 @@ class ClientController extends SmartController
             'segment_id'=>Segment::where('segments','Hot')->value('id'),
 
         ]);
-        $clientId=$client->id;
+   
         $user = User::create([
             'name' => $request->input('admin_name'), 
             'email' => $request->input('email'),
             'phone' => $request->input('phone'),
             'password' => bcrypt($request->input('password')),
-            'client_id'=>$clientId,
+            'client_id'=>$client->id,
         ]);
 
         $user->assignRole('Client Admin');
+        event(new Registered($user));
         foreach($defaultSources as $source){
+
             Source::create([
                 "sources"=>$source,
-                'client_id'=>$clientId,
+                'client_id'=>$client->id,
             ]);
         }
+        Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success',"Welcome to the lead management system");
+        return redirect(RouteServiceProvider::HOME);
 
     }
 }
