@@ -174,7 +174,7 @@ class SourceService implements ModelViewConnector {
     private function getQuery()
     {
         return $this->modelClass::query()
-        ->where('client_id',auth()->user()->client_id);
+        ->DisplayClientSpecificValues();
         // // Example:
         // return $this->modelClass::query()->with([
         //     'author' => function ($query) {

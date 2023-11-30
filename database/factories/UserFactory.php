@@ -34,7 +34,7 @@ class UserFactory extends Factory
                 $client = Client::find($attributes['client_id']);
                 return $client->branch()->inRandomOrder()->first()->id;
             },
-            'designation_id'=>Designation::inRandomOrder()->first()->id,
+            'designation_id'=>Designation::where('client_id',$client->id)->inRandomOrder()->first()->id,
             'phone'=>fake()->phoneNumber,
             
         ];

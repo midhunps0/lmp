@@ -11,11 +11,18 @@ trait allScopes{
             else{
                 return $query->where('client_id', auth()->user()->client_id);
             }
-            
-                
+              
         }
 
         return $query;
+    }
+    /* Scope for displaying queries that are specific to one client */
+    public function scopeDisplayClientSpecificValues($query){
+        
+        if (auth()->user()->client_id) {
+
+            return $query->where('client_id', auth()->user()->client_id);
+        }
     }
 
     

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stages', function (Blueprint $table) {
-            $table->id();
-            
-            $table->string('stages')->unique()->default('Created');            
-            $table->timestamps();
+        Schema::table('tags', function (Blueprint $table){
+            $table->foreignId('client_id')->constrained('clients');
         });
     }
 
@@ -24,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stages');
+        //
     }
 };

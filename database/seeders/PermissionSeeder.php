@@ -76,6 +76,11 @@ class PermissionSeeder extends Seeder
             "Segment-Update",
             "Segment-Delete",
 
+            "Designation-View",
+            "Designation-Create",
+            "Designation-Update",
+            "Designation-Delete",
+
             "Tag-View",
             "Tag-Create",
             "Tag-Update",

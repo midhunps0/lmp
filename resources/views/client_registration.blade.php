@@ -26,12 +26,6 @@
             <x-input-error :messages="$errors->get('address')" class="mt-2" />
         </div>
 
-         <!-- Organization Email  -->
-         <div class="mt-4">
-            <x-input-label for="organization_email" :value="__('Organization Email')" />
-            <x-text-input id="organization_email" class="block mt-1 w-96 bg-gray-100" type="email" name="organization_email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('organization_email')" class="mt-2" />
-        </div>
 
          <!-- Phone Number -->
          <div>

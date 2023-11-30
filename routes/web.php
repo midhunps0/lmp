@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\ImageGalleryController;
 use App\Http\Controllers\LeadController;
@@ -92,6 +93,11 @@ Route::middleware('auth')->group(function () {
     RouteHelper::getEasyRoutes(
         modelName:'PriorityLevel',
         controller:PriorityLevelController::class
+    );
+
+    RouteHelper::getEasyRoutes(
+        modelName:'Designation',
+        controller:DesignationController::class
     );
 
     Route::get('/roles-permissions', [RoleController::class, 'rolesPermissions'])->name('roles.permissions');

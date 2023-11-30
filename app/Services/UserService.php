@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Client;
 use App\Models\User;
 use App\Models\District;
+use App\Models\Branch;
 use App\Services\RoleService;
 use Illuminate\Support\Facades\Hash;
 use Modules\Ynotz\AccessControl\Models\Role;
@@ -20,12 +21,32 @@ class UserService implements ModelViewConnector {
     use IsModelViewConnector;
     private $indexTable;
 
+  
+    
+    
     public function __construct()
     {
         $this->modelClass = User::class;
         $this->indexTable = new IndexTable();
         $this->selectionEnabled = false;
+        
+       
     }
+
+    public function displayAccessibleRoles(){
+        $allRoles = config('role.accessibleRoles');
+        $accessibleRoles = [];
+    
+        foreach ($allRoles as $role => $roleValues) {
+            if (auth()->user()->hasRole($role)) {
+                $accessibleRoles = array_merge($accessibleRoles, $roleValues);
+            }
+        }
+    
+        return $accessibleRoles;
+    }
+
+   
 
     protected function relations()
     {
@@ -41,21 +62,26 @@ class UserService implements ModelViewConnector {
                 'filter_column' => 'id',
                 'sort_column' => 'id',
             ],
+            'branch'=>[
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ]
         ];
     }
     protected function getPageTitle(): string
     {
         return 'Users';
     }
-
     protected function getIndexHeaders(): array
     {
+        
         return $this->indexTable->addHeaderColumn(
             title: 'Name',
             sort: ['key' => 'name']
         )->addHeaderColumn(
             title: 'Role',
-            filter: ['key' => 'roles', 'options' => Role::all()->pluck('name', 'id')]
+            filter: ['key' => 'roles', 'options' => Role::pluck('name','id')],
         )
         ->addHeaderColumn(
             title: 'Actions'
@@ -145,7 +171,7 @@ class UserService implements ModelViewConnector {
 
     private function formElements(): array
     {
-        return [
+       return[
             FormHelper::makeInput(
                 inputType: 'text',
                 key: 'name',
@@ -166,25 +192,31 @@ class UserService implements ModelViewConnector {
                 formTypes: ['create']
             ),
             FormHelper::makeSelect(
+                key: 'branch',
+                label: 'Select Branch',
+                options:Branch::where('client_id',auth()->user()->client_id)->get(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'name',
+                options_src: [BranchService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                ],
+            ),
+            FormHelper::makeSelect(
                 key: 'roles',
                 label: 'Role',
-                options: Role::all(),
-                options_type: 'collection',
+                options:$this->displayAccessibleRoles(),
+                options_type: 'key_value',
                 options_id_key: 'id',
                 options_text_key: 'name',
                 options_src: [RoleService::class, 'suggestList'],
                 properties: [
                     'required' => true,
-                    'multiple' => true
                 ],
             ),
-            // FormHelper::makeCheckbox(
-            //     key: 'verified',
-            //     label: 'Is verified?',
-            //     toggle: true,
-            //     displayText: ['Yes', 'No']
-            // )
         ];
+        
     }
 
     private function getQuery()
@@ -229,6 +261,7 @@ class UserService implements ModelViewConnector {
             // 'username' => ['required', 'string'],
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
+            'branch_id'=>['required'],
             'roles.*' => ['required'],
 
         ];

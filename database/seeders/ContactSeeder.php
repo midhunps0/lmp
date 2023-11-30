@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Contact;
+use App\Models\Lead;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,17 @@ class ContactSeeder extends Seeder
      */
     public function run(): void
     {
-        Contact::factory()->count(100)->create();
+        $leads=Lead::all();
+        
+        foreach($leads as $lead){
+
+            for ($i = 0; $i < 2; $i++) {
+                Contact::create([
+                    'lead_id'=>$lead->id,
+                    'name'=> $lead->name,
+                ]);
+            }
+        }
+        
     }
 }

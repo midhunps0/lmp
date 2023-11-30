@@ -12,6 +12,20 @@
             "Customer Reviews/Testimonials",
             "Word of Mouth"
 
+       ],
+      'defaultDesignations'=>[
+          'Managing Director',
+          "Executive",
+          "Office Assistent",
+          "Cashier"
+        ],
+        'defaultTags'=>[
+          'Advertisements',
+          'Consulting',
+          'Social media',
+          "Finance",
+          "Marketting"
         ]
+
 
     ];

@@ -15,12 +15,13 @@ use Modules\Ynotz\EasyAdmin\Traits\HasMVConnector;
 use Modules\Ynotz\SmartPages\Http\Controllers\SmartController;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+use App\Scopes\defaults;
+use App\Scopes\createClientAdmin;
 use App\Providers\RouteServiceProvider;
 
 class ClientController extends SmartController
 {
-    use HasMVConnector;
-
+    use HasMVConnector, defaults, createClientAdmin;
     public function __construct(Request $request, ClientService $service)
     {
         parent::__construct($request);
@@ -38,40 +39,45 @@ class ClientController extends SmartController
    
     public function regsiteringNewClient(Request $request) {
 
-        $defaultSources=config('default.defaultSources');
-  
+       
         $client = Client::create([
         
             'name' => $request->input('client_name'),
             'phone' => $request->input('phone'),
             'address' => $request->input('client_address'),
-            'email' => $request->input('organization_email'),
+            'email' => $request->input('email'),
             'stage_id'=>Stage::where('stages','Created')->value('id'),
             'prioritry_level_id'=>PriorityLevel::where('level','high')->value('id'),
             'segment_id'=>Segment::where('segments','Hot')->value('id'),
 
         ]);
-   
-        $user = User::create([
+
+        $validatedDataForClientAdmin=[
             'name' => $request->input('admin_name'), 
             'email' => $request->input('email'),
             'phone' => $request->input('phone'),
             'password' => bcrypt($request->input('password')),
             'client_id'=>$client->id,
-        ]);
+        ];
 
-        $user->assignRole('Client Admin');
+        $user=$this->createClientAdmin($client->id,$validatedDataForClientAdmin);
+        // $user = User::create([
+        //     'name' => $request->input('admin_name'), 
+        //     'email' => $request->input('email'),
+        //     'phone' => $request->input('phone'),
+        //     'password' => bcrypt($request->input('password')),
+        //     'client_id'=>$client->id,
+        // ]);
+
+        // $user->assignRole('Client Admin');
         event(new Registered($user));
-        foreach($defaultSources as $source){
-
-            Source::create([
-                "sources"=>$source,
-                'client_id'=>$client->id,
-            ]);
-        }
+        $this->createDefaultSources($client);
+        $this->createDefaultDesignations($client);
+        $this->createDefaultTags($client);
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
 
     }
+
 }

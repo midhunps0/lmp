@@ -13,7 +13,7 @@ class SidebarService implements SidebarServiceInterface
                 'type' => 'menu_group',
                 'title' => 'Access Control',
                 'icon' => 'easyadmin::icons.users',
-                'show' => $this->showRoles(),
+                'show' => $this->showSystemAdmin(),
                 'menu_items' => [
                     [
                         'type' => 'menu_item',
@@ -68,6 +68,14 @@ class SidebarService implements SidebarServiceInterface
             //         ],
             //     ]
             // ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Users',
+                'route' => 'users.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.users',
+                'show' => $this->showUsers()
+            ],
             [
                 'type' => 'menu_item',
                 'title' => 'Subscription Models',
@@ -127,6 +135,14 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
+                'title' => 'Designations',
+                'route' => 'designations.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showAllDesignations()
+            ],
+            [
+                'type' => 'menu_item',
                 'title' => 'Branches',
                 'route' => 'branches.index',
                 'route_params' => [],
@@ -157,6 +173,10 @@ class SidebarService implements SidebarServiceInterface
     {
         return auth()->check();
     }
+    private function showUsers()
+    {
+        return auth()->user()->hasPermissionTo("User-Create");
+    }
     private function showRoles()
     {
         return auth()->check();
@@ -169,11 +189,13 @@ class SidebarService implements SidebarServiceInterface
     {
         return auth()->user()->hasPermissionTo('Administrative'); 
     }
+    private function showAllDesignations()
+    {   
+        return auth()->user()->hasPermissionTo('Designation-Create');  
+    }
     private function showAllBranches()
-    {
-        
-        return auth()->user()->hasPermissionTo('Branch-Create');
-       
+    {   
+        return auth()->user()->hasPermissionTo('Branch-Create');  
     }
     private function showUsersPerClientes(){
         return auth()->user()->hasPermissionTo("User-Create");

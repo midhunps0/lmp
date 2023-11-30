@@ -12,9 +12,15 @@ use Modules\Ynotz\EasyAdmin\RenderDataFormats\CreatePageData;
 use Modules\Ynotz\EasyAdmin\RenderDataFormats\EditPageData;
 use Modules\Ynotz\EasyAdmin\Services\ColumnLayout;
 use Modules\Ynotz\EasyAdmin\Services\RowLayout;
+use App\Models\Segment;
+use App\Models\Stage;
+use App\Models\PriorityLevel;
+use App\Scopes\createClientAdmin;
 
 class ClientService implements ModelViewConnector {
     use IsModelViewConnector;
+
+    use createClientAdmin;
     private $indexTable;
      
     public function __construct()
@@ -190,6 +196,18 @@ class ClientService implements ModelViewConnector {
                 label: 'Email Id',
                 properties: ['required' => true],
             ),
+            'clientAdminName' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'users',
+                label: 'Client Admin Name',
+                properties: ['required' => true],
+            ),
+            'password' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'users',
+                label: 'Password',
+                properties: ['required' => true],
+            ),
         ];
     }
 
@@ -229,6 +247,7 @@ class ClientService implements ModelViewConnector {
             'address' => ['required', 'string'],
             'phone' => ['required', 'string'],
             'email' => ['required', 'string'],
+            
             //'managing_person' => ['required', 'string'],
         ];
     }
@@ -240,14 +259,25 @@ class ClientService implements ModelViewConnector {
             'address' => ['required', 'string'],
             'phone' => ['required', 'string'],
             'email' => ['required', 'string'],
+            
             //'managing_person' => ['required', 'string'],
         ];
     }
 
     public function processBeforeStore(array $data): array
     {
-        // // Example:
-        // $data['user_id'] = auth()->user()->id;
+        $data['stage_id']=Stage::where('stages','Created')->value('id');
+        $data['prioritry_level_id']=PriorityLevel::where('level','high')->value('id');
+        $data['segment_id']=Segment::where('segments','Hot')->value('id');
+
+        $dataForCreatingClientAdmin=[
+            'name' => $data['clientAdminName'], 
+            'email' => $data['email'],
+            'phone' =>$data['phone'],
+            'password' => bcrypt($data['password']),
+            'client_id'=>$data['id']
+        ];
+        $this->createClientAdmin($data['id'], $dataForCreatingClientAdmin);
 
         return $data;
     }
@@ -288,6 +318,11 @@ class ClientService implements ModelViewConnector {
                         ->addElements([
                             (new ColumnLayout(width: '1/2'))->addInputSlot('phone'),
                             (new ColumnLayout(width: '1/2'))->addInputSlot('email'),
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('clientAdminName'),
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('password'),
                         ]),
                 ]);
         return $layout->getLayout();

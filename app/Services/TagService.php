@@ -173,7 +173,7 @@ class TagService implements ModelViewConnector {
 
     private function getQuery()
     {
-        return $this->modelClass::query();
+        return $this->modelClass::query()->DisplayClientSpecificValues();
         // // Example:
         // return $this->modelClass::query()->with([
         //     'author' => function ($query) {
@@ -199,9 +199,7 @@ class TagService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
-        // // Example:
-        // $data['user_id'] = auth()->user()->id;
-
+        $data['client_id'] = auth()->user()->client_id;
         return $data;
     }
 
