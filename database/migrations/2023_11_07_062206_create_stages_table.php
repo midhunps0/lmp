@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stages', function (Blueprint $table) {
             $table->id();
             
-            $table->string('stages')->unique()->default('Created');            
+            $table->string('stages')->default('Created');            
             $table->timestamps();
         });
     }

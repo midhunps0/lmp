@@ -19,6 +19,7 @@ class PriorityLevelFactory extends Factory
         return [
             
             'level'=>fake()->randomElements(["low","medium","heigh"]),
+            'client_id'=>Client::inRandomOrder()->first()->id,
 
         ];
     }

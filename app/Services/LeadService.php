@@ -2,6 +2,8 @@
 namespace App\Services;
 
 use App\Models\Lead;
+use App\Models\Stage;
+use App\Models\Segment;
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -47,6 +49,11 @@ class LeadService implements ModelViewConnector {
                 'filter_column' => 'id',
                 'sort_column' => 'id',
             ],
+            'segments' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
         ];
     }
     protected function getPageTitle(): string
@@ -71,8 +78,7 @@ class LeadService implements ModelViewConnector {
     }
 
     protected function getIndexColumns(): array
-    {
-        
+    {       
         return $this->indexTable->addColumn(
             fields: ['name'],
         )->addColumn(
@@ -186,6 +192,18 @@ class LeadService implements ModelViewConnector {
                 key: 'leadable_type',
                 label: 'Type of Lead'
             ),
+            'stage'=>FormHelper::makeSelect(
+                key: 'stage',
+                label: 'Choose Stage',
+                options:Stage::where('client_id',auth()->user()->client_id)->get(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'stages',
+                options_src: [StageService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                ],
+            ),
         ];
     }
 
@@ -265,6 +283,12 @@ class LeadService implements ModelViewConnector {
                         ->addElements([
                             (new ColumnLayout(width: '1/2'))->addInputSlot('name'),
                             (new ColumnLayout(width: '1/2'))->addInputSlot('leadable_type'),
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('stage'),
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('segment'),
+                            
                         ])
                 ]
             );

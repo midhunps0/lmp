@@ -13,6 +13,12 @@ class SubscriptionModelSeeder extends Seeder
      */
     public function run(): void
     {
-        SubscriptionModel::factory()->count(3)->create();
+       $models=config('default.subscriptionModels');
+       foreach($models as $model=>$fee){
+            SubscriptionModel::create([
+                'model'=>$model,
+                'fee'=>$fee,
+            ]);
+       }
     }
 }

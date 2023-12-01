@@ -1,31 +1,55 @@
 <?php
 
-/* defining default set of sources that every client get accessed to when a client register themself*/
+/* Defining various default values */
     
   return [
 
-       'defaultSources'=>[
+      'subscriptionModels'=>[
+        'Silver'=>199,
+        "Gold"=>499,
+        "Platinum"=>1499
+      ],
+      
+      /* defining default set of sources that every client get accessed to when a client register themself*/
 
-            'Social Media',
-            'Direct Marketing',
-            "Content Marketing",
-            "Customer Reviews/Testimonials",
-            "Word of Mouth"
-
-       ],
+      'defaultSources'=>[
+          'Social Media',
+          'Direct Marketing',
+          "Content Marketing",
+          "Customer Reviews/Testimonials",
+          "Word of Mouth"
+      ],
       'defaultDesignations'=>[
           'Managing Director',
           "Executive",
           "Office Assistent",
           "Cashier"
-        ],
-        'defaultTags'=>[
+      ],
+      'defaultTags'=>[
           'Advertisements',
           'Consulting',
           'Social media',
           "Finance",
           "Marketting"
-        ]
+      ],
+      'defaultSegments'=>[
+          'Hot',
+          "Warm",
+          "Cold"
+      ],
+      'defaultStages'=>[
+          "Created",
+          "Enquiry",
+          "lead",
+          "folllowup",
+          "cancelled", 
+          "approved"
+      ],
+      'defaultPriorityLevel'=>[
+          'High',
+          'Low',
+          'Medium'
+      ],
 
 
     ];

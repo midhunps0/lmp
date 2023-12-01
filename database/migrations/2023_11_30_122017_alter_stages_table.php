@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('segments', function (Blueprint $table) {
-            $table->id();
-            
-            $table->string('segments')->default('Hot');
-           
-            $table->timestamps();
+        Schema::table('stages', function (Blueprint $table){
+            $table->foreignId('client_id')->constrained('clients');
         });
     }
 
@@ -25,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('segments');
+        //
     }
 };

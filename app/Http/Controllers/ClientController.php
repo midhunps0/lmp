@@ -46,10 +46,7 @@ class ClientController extends SmartController
             'phone' => $request->input('phone'),
             'address' => $request->input('client_address'),
             'email' => $request->input('email'),
-            'stage_id'=>Stage::where('stages','Created')->value('id'),
-            'prioritry_level_id'=>PriorityLevel::where('level','high')->value('id'),
-            'segment_id'=>Segment::where('segments','Hot')->value('id'),
-
+            
         ]);
 
         $validatedDataForClientAdmin=[
@@ -74,6 +71,9 @@ class ClientController extends SmartController
         $this->createDefaultSources($client);
         $this->createDefaultDesignations($client);
         $this->createDefaultTags($client);
+        $this->createDefaultSegments($client);
+        $this->createDefaultStages($client);
+        $this->createDefaultPriorityLevel($client);
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);

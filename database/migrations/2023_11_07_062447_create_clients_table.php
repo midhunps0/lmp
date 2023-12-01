@@ -18,9 +18,6 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->string('email')->unique();
-            $table->foreignId('stage_id')->constrained('stages')->default(1);
-            $table->foreignId('prioritry_level_id')->constrained('priority_levels')->default(1);
-            $table->foreignId('segment_id')->constrained('segments')->default(1);
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });

@@ -27,9 +27,6 @@ class ClientFactory extends Factory
             'phone'=>fake()->phoneNumber,
             'address'=>fake()->address,
             'email'=>fake()->unique()->safeEmail,
-            'prioritry_level_id'=>PriorityLevel::inRandomOrder()->first()->id,
-            'stage_id'=>Stage::inRandomOrder()->first()->id,
-            'segment_id'=>Segment::inRandomOrder()->first()->id,
         ];
     }
 }

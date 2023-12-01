@@ -196,18 +196,6 @@ class ClientService implements ModelViewConnector {
                 label: 'Email Id',
                 properties: ['required' => true],
             ),
-            'clientAdminName' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'users',
-                label: 'Client Admin Name',
-                properties: ['required' => true],
-            ),
-            'password' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'users',
-                label: 'Password',
-                properties: ['required' => true],
-            ),
         ];
     }
 
@@ -266,18 +254,6 @@ class ClientService implements ModelViewConnector {
 
     public function processBeforeStore(array $data): array
     {
-        $data['stage_id']=Stage::where('stages','Created')->value('id');
-        $data['prioritry_level_id']=PriorityLevel::where('level','high')->value('id');
-        $data['segment_id']=Segment::where('segments','Hot')->value('id');
-
-        $dataForCreatingClientAdmin=[
-            'name' => $data['clientAdminName'], 
-            'email' => $data['email'],
-            'phone' =>$data['phone'],
-            'password' => bcrypt($data['password']),
-            'client_id'=>$data['id']
-        ];
-        $this->createClientAdmin($data['id'], $dataForCreatingClientAdmin);
 
         return $data;
     }
@@ -318,11 +294,6 @@ class ClientService implements ModelViewConnector {
                         ->addElements([
                             (new ColumnLayout(width: '1/2'))->addInputSlot('phone'),
                             (new ColumnLayout(width: '1/2'))->addInputSlot('email'),
-                        ]),
-                    (new RowLayout())
-                        ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('clientAdminName'),
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('password'),
                         ]),
                 ]);
         return $layout->getLayout();

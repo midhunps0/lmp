@@ -24,7 +24,7 @@ class Client extends Authenticatable
         return $this->hasOne(Stage::class);
     }
     public function segments(){
-        return $this->hasOne(Segment::class);
+        return $this->hasMany(Segment::class);
     }
     public function templates(){
         return $this->hasMany(Template::class);

@@ -20,6 +20,7 @@ class StageFactory extends Factory
         return [
             
             'stages'=>fake()->randomElement(["Created","Enquiry","lead","folllowup","cancelled","approved"]),
+            'client_id'=>Client::inRandomOrder()->first()->id,
         ];
     }
 }

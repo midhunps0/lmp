@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Segment extends Model
 {
     use HasFactory;
-    protected $fillable = ['segments'];
-    public function clients(){
-        return $this->belongsToMany(Client::class);
+    protected $guarded=[];
+    public function client(){
+        return $this->belongsTo(Client::class);
     }
     public function leads(){
         return $this->hasMany(Lead::class);

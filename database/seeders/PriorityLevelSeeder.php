@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\PriorityLevel;
+use App\Models\Client;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,11 +14,15 @@ class PriorityLevelSeeder extends Seeder
      */
     public function run(): void
     {
-        $priorities=["low","medium","high"];
-        foreach($priorities as $priority){
-            PriorityLevel::create([
-                'level'=>$priority,
-            ]);
+        $clients=Client::all();
+        $priorities = config('default.defaultPriorityLevel');
+        foreach($clients as $client){
+            foreach($priorities as $priority){
+                PriorityLevel::create([
+                    'level'=>$priority,
+                    'client_id'=>$client->id,
+                ]);
+            }
         }
     }
 }

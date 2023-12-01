@@ -19,7 +19,8 @@ class SegmentFactory extends Factory
     {
         return [
             
-            'segments'=>fake()->randomElement(['Hot','Cold','Warm'])
+            'segments'=>fake()->randomElement(['Hot','Cold','Warm']),
+            'client_id'=>Client::inRandomOrder()->first()->id,
         ];
     }
 }

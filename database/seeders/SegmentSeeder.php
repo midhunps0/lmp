@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Segment;
+use App\Models\Client;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,12 +14,16 @@ class SegmentSeeder extends Seeder
      */
     public function run(): void
     {
-        $segments = ["Hot","Warm","Cold"];
-        
-        foreach ($segments as $segment) {
-            Segment::create([
-                'segments' => $segment,
-            ]);
+        $clients=Client::all();
+        $segments = config('default.defaultSegments');
+        foreach($clients as $client){
+            foreach ($segments as $segment) {
+                Segment::create([
+                    'segments' => $segment,
+                    'client_id'=>$client->id,
+                ]);
+            }
         }
+        
     }
 }

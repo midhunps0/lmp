@@ -14,16 +14,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(PermissionSeeder::class);
-        //$this->call(RoleSeeder::class);
+        $this->call(SubscriptionModelSeeder::class);
+        $this->call(ClientSeeder::class);
+
+        $this->call(DesignationSeeder::class);
+        $this->call(PriorityLevelSeeder::class);
         $this->call(StageSeeder::class);
         $this->call(SegmentSeeder::class);
-        $this->call(SubscriptionModelSeeder::class);
-        $this->call(PriorityLevelSeeder::class);
-        $this->call(ClientSeeder::class);
-        $this->call(DesignationSeeder::class);
         $this->call(SourceSeeder::class);
         $this->call(TagSeeder::class);
         $this->call(ActionSeeder::class);
+        
         $this->call(UserSeeder::class);
         $this->call(LeadSeeder::class);
         $this->call(FollowupSeeder::class);

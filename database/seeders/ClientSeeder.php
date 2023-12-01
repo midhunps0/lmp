@@ -28,7 +28,7 @@ class ClientSeeder extends Seeder
         Client::factory()
         ->hasbranch(2)
         ->hastemplates()
-        ->count(20)
+        ->count(100)
         ->create()
         ->each(function ($client) {
             $client->action()->save( Action::factory()->create() );
