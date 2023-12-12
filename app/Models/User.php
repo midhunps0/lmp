@@ -69,8 +69,11 @@ class User extends Authenticatable
     public function leads(){
         return $this->hasMany(Lead::class);
     }
-    public function followups(){
-        return $this->hasMany(Followup::class);
+    public function CreatedBy(){
+        return $this->hasMany(Followup::class,'created_by');
+    }
+    public function CarriedOutBy(){
+        return $this->hasMany(Followup::class,'carried_out_by');
     }
 
     

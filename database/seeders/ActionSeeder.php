@@ -14,13 +14,17 @@ class ActionSeeder extends Seeder
      */
     public function run(): void
     {
+        $actions=config('default.defaultActions');
         $clients=Client::all();
         foreach($clients as $client){
-            Action::create([
-                'client_id'=>$client->id,
-                'name'=>fake()->randomElement(["Followup started","Appoinments scheduled","lead created"]),
-                'location'=>fake()->address
-            ]);
+            foreach($actions as $action){
+                Action::create([
+                    'client_id'=>$client->id,
+                    'name'=>$action,
+                    'location'=>fake()->address
+                ]);
+            }
+            
         }
     }
 }

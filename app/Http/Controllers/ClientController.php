@@ -74,6 +74,7 @@ class ClientController extends SmartController
         $this->createDefaultSegments($client);
         $this->createDefaultStages($client);
         $this->createDefaultPriorityLevel($client);
+        $this->createActions($client);
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);

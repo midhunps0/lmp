@@ -1,9 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\Lead;
-use App\Models\Stage;
-use App\Models\Segment;
+use App\Models\Action;
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -12,15 +10,14 @@ use Modules\Ynotz\EasyAdmin\RenderDataFormats\CreatePageData;
 use Modules\Ynotz\EasyAdmin\RenderDataFormats\EditPageData;
 use Modules\Ynotz\EasyAdmin\Services\ColumnLayout;
 use Modules\Ynotz\EasyAdmin\Services\RowLayout;
-use App\Models\Branch;
 
-class LeadService implements ModelViewConnector {
+class ActionService implements ModelViewConnector {
     use IsModelViewConnector;
     private $indexTable;
 
     public function __construct()
     {
-        $this->modelClass = Lead::class;
+        $this->modelClass = Action::class;
         $this->indexTable = new IndexTable();
         $this->selectionEnabled = true;
 
@@ -43,46 +40,46 @@ class LeadService implements ModelViewConnector {
 
     protected function relations()
     {
-       
-        return [
-            'stage' => [
-                'search_column' => 'id',
-                'filter_column' => 'id',
-                'sort_column' => 'id',
-            ],
-           
-        ];
+        return [];
+        // // Example:
+        // return [
+        //     'author' => [
+        //         'search_column' => 'id',
+        //         'filter_column' => 'id',
+        //         'sort_column' => 'id',
+        //     ],
+        //     'reviewScore' => [
+        //         'search_column' => 'score',
+        //         'filter_column' => 'id',
+        //         'sort_column' => 'id',
+        //     ],
+        // ];
     }
     protected function getPageTitle(): string
     {
-        return "Leads";
+        return "Actions";
     }
 
     protected function getIndexHeaders(): array
     {
+        
         return $this->indexTable->addHeaderColumn(
-            title: 'Lead Name',
+            title: 'Action Name',
             sort: ['key' => 'name'],
         )->addHeaderColumn(
-            title: 'Lead Type',
-            filter: ['key' => 'leadable_type', 'options' => Lead::distinct('leadable_type')->pluck('leadable_type')->toArray()],
-        )->addHeaderColumn(
-            title: 'Stage',
-            
+            title: 'Location',
         )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
     }
 
     protected function getIndexColumns(): array
-    {       
+    {
+        
         return $this->indexTable->addColumn(
             fields: ['name'],
         )->addColumn(
-            fields: ['leadable_type'],
-        )->addColumn(
-            fields: ['stages'],
-            relation: 'stage',
+            fields: ['location'],
         )
         ->addActionColumn(
             editRoute: $this->getEditRoute(),
@@ -127,20 +124,20 @@ class LeadService implements ModelViewConnector {
     public function getDownloadColTitles(): array
     {
         return [
-            // 'title' => 'Title',
-            // 'author.name' => 'Author'
+            'title' => 'Title',
+            'author.name' => 'Author'
         ];
     }
 
     public function getCreatePageData(): CreatePageData
     {
         return new CreatePageData(
-            title: 'Create Lead',
+            title: 'Create Action',
             form: FormHelper::makeForm(
-                title: 'Create Lead',
-                id: 'form_leads_create',
-                action_route: 'leads.store',
-                success_redirect_route: 'leads.index',
+                title: 'Create Action',
+                id: 'form_actions_create',
+                action_route: 'actions.store',
+                success_redirect_route: 'actions.index',
                 items: $this->getCreateFormElements(),
                 layout: $this->buildCreateFormLayout(),
                 label_position: 'top'
@@ -151,13 +148,13 @@ class LeadService implements ModelViewConnector {
     public function getEditPageData($id): EditPageData
     {
         return new EditPageData(
-            title: 'Edit Lead',
+            title: 'Edit Action',
             form: FormHelper::makeEditForm(
-                title: 'Edit Lead',
-                id: 'form_leads_create',
-                action_route: 'leads.update',
+                title: 'Edit Action',
+                id: 'form_actions_create',
+                action_route: 'actions.update',
                 action_route_params: ['id' => $id],
-                success_redirect_route: 'leads.index',
+                success_redirect_route: 'actions.index',
                 items: $this->getEditFormElements(),
                 label_position: 'top'
             ),
@@ -181,61 +178,19 @@ class LeadService implements ModelViewConnector {
             'name' => FormHelper::makeInput(
                 inputType: 'text',
                 key: 'name',
-                label: 'Lead Name',
+                label: 'Action',
                 properties: ['required' => true],
             ),
-            'leadable_type' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'leadable_type',
-                label: 'Type of Lead'
+            'location' => FormHelper::makeTextarea(
+                key: 'location',
+                label: 'Location'
             ),
-            'stage'=>FormHelper::makeSelect(
-                key: 'stage_id',
-                label: 'Choose Stage',
-                options:Stage::where('client_id',auth()->user()->client_id)->get(),
-                options_type: 'collection',
-                options_id_key: 'id',
-                options_text_key: 'stages',
-                options_src: [StageService::class, 'suggestList'],
-                properties: [
-                    'required' => true,
-                ],
-            ),
-            'segment'=>FormHelper::makeSelect(
-                key: 'segment_id',
-                label: 'Choose Segment',
-                options:Segment::where('client_id',auth()->user()->client_id)->get(),
-                options_type: 'collection',
-                options_id_key: 'id',
-                options_text_key: 'segments',
-                options_src: [SegmentService::class, 'suggestList'],
-                properties: [
-                    'required' => true,
-                ],
-            ),
-            'notes'=>FormHelper::makeTextarea(
-                key:'notes',
-                label:'Your Notes',
-                properties:[
-                    'required'=>true,
-                ]
-            )
         ];
     }
 
     private function getQuery()
     {
-        $result= $this->modelClass::DisplayingLeads()
-        ->with([
-            'stage'=>function($query){
-                $query->select('id', 'stages');
-            }    
-        ]);
-
-
-        return $result;
-
-        //return $this->modelClass::query();
+        return $this->modelClass::query()->DisplayClientSpecificValues();
         // // Example:
         // return $this->modelClass::query()->with([
         //     'author' => function ($query) {
@@ -243,19 +198,14 @@ class LeadService implements ModelViewConnector {
         //     }
         // ]);
     }
-    public function getAllLeads(){
-        return $this->getQuery()->get();
-    }
 
     public function getStoreValidationRules(): array
     {
         
         return [
             'name' => ['required', 'string'],
-            'leadable_type' => ['required', 'string'],
-            'stage_id'=>['required'],
-            'segment_id'=>['required'],
-            'notes'=>['required']
+            'location'=>['required','string'],
+            
         ];
     }
 
@@ -263,10 +213,8 @@ class LeadService implements ModelViewConnector {
     {
         return [
             'name' => ['required', 'string'],
-            'leadable_type' => ['required', 'string'],
-            'stage_id'=>['required'],
-            'segment_id'=>['required'],
-            'notes'=>['required']
+            'location'=>['required','string'],
+            
         ];
     }
 
@@ -274,8 +222,6 @@ class LeadService implements ModelViewConnector {
     {
         // // Example:
         $data['client_id'] = auth()->user()->client_id;
-        $data['user_id'] = auth()->user()->id;
-        $data['branch_id'] = Branch::inRandomOrder()->first()->id;
 
         return $data;
     }
@@ -285,6 +231,7 @@ class LeadService implements ModelViewConnector {
         // // Example:
         // $data['user_id'] = auth()->user()->id;
         $data['client_id'] = auth()->user()->client_id;
+
         return $data;
     }
 
@@ -300,23 +247,13 @@ class LeadService implements ModelViewConnector {
 
     public function buildCreateFormLayout(): array
     {
-        
+       
          $layout = (new ColumnLayout())
             ->addElements([
                     (new RowLayout())
                         ->addElements([
                             (new ColumnLayout(width: '1/2'))->addInputSlot('name'),
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('leadable_type'),
-                        ]),
-                    (new RowLayout())
-                        ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('stage'),
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('segment'),
-                            
-                        ]),
-                    (new RowLayout())
-                        ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('notes'),                            
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('location'),
                         ])
                 ]
             );

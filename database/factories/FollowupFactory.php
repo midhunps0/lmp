@@ -25,7 +25,7 @@ class FollowupFactory extends Factory
     
         return [
             'lead_id' =>  $lead->id,
-            'user_id' =>  $lead->user_id,
+            'carried_out_by' =>  $lead->user_id,
             'created_by' => $lead->user_id,
             'action_id' =>   Action::inRandomOrder()->first()->id,
             'scheduled_date' => now()->addDays(random_int(0, 5)),

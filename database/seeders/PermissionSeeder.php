@@ -90,6 +90,11 @@ class PermissionSeeder extends Seeder
             "Priority-Level-Create",
             "Priority-Level-Update",
             "Priority-Level-Delete",
+            
+            "Action-View",
+            "Action-Create",
+            "Action-Update",
+            "Action-Delete",
         ];
 
         foreach ($allPermissions as $permission) {

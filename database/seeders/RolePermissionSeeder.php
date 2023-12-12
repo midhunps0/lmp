@@ -43,6 +43,7 @@ class RolePermissionSeeder extends Seeder
                 "User-Delete",
 
                 "Branch-View",
+
                 "Branch-Create",
 
                 "Lead-View",
@@ -55,7 +56,10 @@ class RolePermissionSeeder extends Seeder
                 "Segment-Create",
                 "Tag-Create",
                 "Priority-Level-Create",
-                "Designation-Create"
+                "Designation-Create",
+                "Action-Create",
+
+                "Followup-Create"
             ],
 
             "Branch Admin"=>[

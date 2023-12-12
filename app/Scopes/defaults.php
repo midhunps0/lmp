@@ -1,5 +1,7 @@
 <?php
 namespace App\Scopes;
+
+use App\Models\Action;
 use App\Models\Source;
 use App\Models\Designation;
 use App\Models\PriorityLevel;
@@ -74,6 +76,18 @@ trait defaults{
 
             PriorityLevel::create([
                 "level"=>$level,
+                'client_id'=>$client->id,
+            ]);
+        }
+    }
+    public function createActions($client){
+
+        $defaultAction=config('default.Actions');
+        foreach($defaultAction as $action){
+
+            Action::create([
+                "name"=>$action,
+                'location'=>fake()->address,
                 'client_id'=>$client->id,
             ]);
         }

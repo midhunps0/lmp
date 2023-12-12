@@ -1,7 +1,10 @@
 <?php
 namespace App\Services;
 
+use App\Models\Action;
 use App\Models\Followup;
+use App\Models\Lead;
+use App\Models\User;
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -48,6 +51,17 @@ class FollowupService implements ModelViewConnector {
                 'filter_column' => 'id',
                 'sort_column' => 'id',
             ],
+            'createdBy' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
+            'CarriedOutBy' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
+
         ];
         //     'reviewScore' => [
         //         'search_column' => 'score',
@@ -68,6 +82,10 @@ class FollowupService implements ModelViewConnector {
             title: 'Lead Name',
             sort: ['key' => 'lead_id'],
         )->addHeaderColumn(
+            title: 'Created By',
+        )->addHeaderColumn(
+            title: 'Carried Out By',               
+        )->addHeaderColumn(
             title: 'Scheduled Date',
             
         )->addHeaderColumn(
@@ -85,6 +103,12 @@ class FollowupService implements ModelViewConnector {
         return $this->indexTable->addColumn(
             fields: ['name'],
             relation:'lead'
+        )->addColumn(
+            fields:['name'],
+            relation:'createdBy'
+        )->addColumn(
+            fields:['name'],
+            relation:'carriedOutBy'
         )->addColumn(
             fields: ['scheduled_date'],
         )->addColumn(
@@ -186,25 +210,79 @@ class FollowupService implements ModelViewConnector {
 
     private function formElements(): array
     {
-        return [];
-        // // Example:
-        // return [
-        //     'title' => FormHelper::makeInput(
-        //         inputType: 'text',
-        //         key: 'title',
-        //         label: 'Title',
-        //         properties: ['required' => true],
-        //     ),
-        //     'description' => FormHelper::makeTextarea(
-        //         key: 'description',
-        //         label: 'Description'
-        //     ),
-        // ];
+       
+        return [
+            'lead_id'=>FormHelper::makeSelect(
+                key: 'lead_id',
+                label: 'Choose Lead',
+                options:Lead::where('client_id',auth()->user()->client_id)->get(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'name',
+                options_src: [LeadService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                ],
+                formTypes:['create']
+            ),
+            'action_id'=>FormHelper::makeSelect(
+                key: 'action_id',
+                label: 'Choose Action',
+                options:Action::where('client_id',auth()->user()->client_id)->get(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'name',
+                options_src: [ActionService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                ],
+            ),
+            'carried_out_by'=>FormHelper::makeSelect(
+                key: 'carried_out_by',
+                label: 'Carried Out By',
+                options:User::where('client_id',auth()->user()->client_id)->get(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'name',
+                options_src: [ActionService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                ],
+            ),
+            'scheduled_date'=>FormHelper::makeDatePicker(
+                key:'scheduled_date',
+                label:'Scheduled Date',
+                startYear:2023,
+                dateFormat:'YYYY-MM-DD',
+                properties:[
+                    'required'=> true
+                ]
+            ),
+            'actual_date'=>FormHelper::makeDatePicker(
+                key:'actual_date',
+                label:'Actual Date',
+                startYear:2023,
+                dateFormat:'YYYY-MM-DD',
+                properties:[
+                    'required'=> true
+                ]
+            ),
+            'next_followup_date'=>FormHelper::makeDatePicker(
+                    key:'next_followup_date',
+                    label:'Next Followup Date',
+                    startYear:2023,
+                    dateFormat:'YYYY-MM-DD',
+                    properties:[
+                        'required'=> true
+                    ]
+            )
+        ];
     }
 
     private function getQuery()
     {
-        return $this->modelClass::DisplayFollowups()
+        return $this->modelClass::query()
+        ->where('created_by',auth()->user()->id)
         ->with([
             'lead'=>function($query){
                 $query->select('id', 'name');
@@ -220,26 +298,33 @@ class FollowupService implements ModelViewConnector {
 
     public function getStoreValidationRules(): array
     {
-        return [];
-        // // Example:
-        // return [
-        //     'title' => ['required', 'string'],
-        //     'description' => ['required', 'string'],
-        // ];
+        
+        return [
+            'lead_id' => ['required'],
+            'action_id' => ['required'],
+            'scheduled_date' => ['required'],
+            'actual_date' => ['required'],
+            'next_followup_date' => ['required'],
+            'carried_out_by'=>['required']
+            
+        ];
     }
 
     public function getUpdateValidationRules($id): array
     {
-        return [];
-        // // Example:
-        // $arr = $this->getStoreValidationRules();
-        // return $arr;
+        return [
+        'action_id' => ['required'],
+        'scheduled_date' => ['required'],
+        'actual_date' => ['required'],
+        'next_followup_date' => ['required'],
+        'carried_out_by'=>['required']
+        ];
     }
 
     public function processBeforeStore(array $data): array
     {
         // // Example:
-        // $data['user_id'] = auth()->user()->id;
+        $data['created_by'] = auth()->user()->id;
 
         return $data;
     }
@@ -264,25 +349,33 @@ class FollowupService implements ModelViewConnector {
 
     public function buildCreateFormLayout(): array
     {
-        return (new ColumnLayout())->getLayout();
-        // // Example
-        //  $layout = (new ColumnLayout())
-        //     ->addElements([
-        //             (new RowLayout())
-        //                 ->addElements([
-        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('title'),
-        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('description'),
-        //                 ])
-        //         ]
-        //     );
-        // return $layout->getLayout();
+        
+         $layout = (new ColumnLayout())
+            ->addElements([
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('lead_id'),
+                            
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('action_id'),
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('carried_out_by'),
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('scheduled_date'),
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('actual_date'),
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout(width: '1/2'))->addInputSlot('next_followup_date'),
+                        ])
+                ]
+            );
+        return $layout->getLayout();
     }
-    public function covertDateIntoHumanReadableForm($dateString){
 
-        $dateTime = new DateTime($dateString);
-        return  $dateTime->format('F j, Y g:i A');
-
-    }
 }
 
 ?>

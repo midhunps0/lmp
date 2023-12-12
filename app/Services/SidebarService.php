@@ -108,6 +108,14 @@ class SidebarService implements SidebarServiceInterface
                 'icon' => 'easyadmin::icons.plus',
                 'show' => $this->showTags()
             ],
+            [
+                'type' => 'menu_item',
+                'title' => 'Actions',
+                'route' => 'actions.index',
+                'route_params' => [],
+                'icon' => 'easyadmin::icons.plus',
+                'show' => $this->showActions()
+            ],
             
             [
                 'type' => 'menu_item',
@@ -226,6 +234,9 @@ class SidebarService implements SidebarServiceInterface
 
     private function showPriorityLevels(){
         return auth()->user()->hasPermissionTo("Priority-Level-Create");
+    }
+    private function showActions(){
+        return auth()->user()->hasPermissionTo("Action-Create");
     }
 }
 ?>

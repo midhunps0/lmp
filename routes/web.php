@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActionController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DesignationController;
@@ -82,7 +83,11 @@ Route::middleware('auth')->group(function () {
 
     RouteHelper::getEasyRoutes(
         modelName:'Lead',
-        controller:LeadController ::class
+        controller:LeadController::class
+    );
+    RouteHelper::getEasyRoutes(
+        modelName:'Action',
+        controller:ActionController::class
     );
    
     RouteHelper::getEasyRoutes(

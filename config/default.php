@@ -50,6 +50,12 @@
           'Low',
           'Medium'
       ],
+      'defaultActions'=>[
+        'Followup Created',
+        'Followup Initiated',
+        'Followup Continued',
+        'Followup Completed',
+    ],
 
 
     ];

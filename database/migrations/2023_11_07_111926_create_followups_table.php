@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('followups', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lead_id')->constrained('leads');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('carried_out_by')->constrained('users');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('action_id')->constrained('actions');
             $table->dateTime('scheduled_date');
