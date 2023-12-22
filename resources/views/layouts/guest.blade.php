@@ -18,7 +18,10 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                <div class="flex flex-col justify-center items-center mb-2">
+                    <h1 class="text-secondary-color text-3xl">Shop With Us</h1>
+                    <p class="text-center text-stone-600 text-sm ">Everything You Need</p>
+                </div>
                 </a>
             </div>
 

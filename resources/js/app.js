@@ -24,3 +24,13 @@ Alpine.data('initPage', page);
 Alpine.data('progressBar', progressbar);
 
 Alpine.start();
+
+
+var swiper = new Swiper('.category', {
+    slidesPerView: 4,
+    spaceBetween: 10,
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+});

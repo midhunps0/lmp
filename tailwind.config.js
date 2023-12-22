@@ -14,6 +14,13 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            backgroundImage:{
+                'hero-pattern':'url(../../public/images/pexels-susanne-jutzeler-sujufoto-2099737.jpg)',
+                'banner1':'url(../../public/banners/banner1.jpg)',
+                'banner2':'url(../../public/banners/banner2.jpg)',
+                'banner3':'url(../../public/banners/banner3.jpg)',
+                'banner4':'url(../../public/banners/banner4.jpg)',
+            },
             minWidth: {
                 '1': '.25rem',
                 '2': '.5rem',
@@ -125,6 +132,13 @@ export default {
                 '3/4': '75vh',
                 '4/5': '80vh',
                 '9/10': '90vh',
+            },
+            colors:{
+                'primary-color':'#ff6b6b',
+                'secondary-color':'#794afa',
+                'light-bg-color':'#f2f3f5',
+                'light-text-color':'#7c899a',
+                'dark-color':'#0a021c',
             },
         },
     },

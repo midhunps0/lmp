@@ -33,5 +33,6 @@ class UserSeeder extends Seeder
             ]
         );
         $u->assignRole('Admin');
+
     }
 }

@@ -54,4 +54,21 @@ class User extends Authenticatable
             ),
         ];
     }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+    public function address(){
+        return $this->hasOne(Address::class);
+    }
+    public function wishlist(){
+        return $this->hasMany(Wishlist::class);
+    }
+    public function cart(){
+        return $this->hasMany(Cart::class);
+    }
+    public function invoice(){
+        return $this->hasMany(Invoice::class);
+    }
+
 }
