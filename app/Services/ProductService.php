@@ -1,7 +1,14 @@
 <?php
+
 namespace App\Services;
 
+use App\Models\Attribute;
+use App\Models\AttributeValue;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductTag;
+use App\Models\Tag;
+
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -10,8 +17,12 @@ use Modules\Ynotz\EasyAdmin\RenderDataFormats\CreatePageData;
 use Modules\Ynotz\EasyAdmin\RenderDataFormats\EditPageData;
 use Modules\Ynotz\EasyAdmin\Services\ColumnLayout;
 use Modules\Ynotz\EasyAdmin\Services\RowLayout;
+use Modules\Ynotz\MediaManager\Services\EAInputMediaValidator;
+use Illuminate\Support\Str;
+use Modules\Ynotz\EasyAdmin\InputUpdateResponse;
 
-class ProductService implements ModelViewConnector {
+class ProductService implements ModelViewConnector
+{
     use IsModelViewConnector;
     private $indexTable;
 
@@ -40,20 +51,20 @@ class ProductService implements ModelViewConnector {
 
     protected function relations()
     {
-        return [];
-        // // Example:
-        // return [
-        //     'author' => [
-        //         'search_column' => 'id',
-        //         'filter_column' => 'id',
-        //         'sort_column' => 'id',
-        //     ],
-        //     'reviewScore' => [
-        //         'search_column' => 'score',
-        //         'filter_column' => 'id',
-        //         'sort_column' => 'id',
-        //     ],
-        // ];
+
+        return [
+            'category' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
+            'tags' => [
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ],
+            
+        ];
     }
     protected function getPageTitle(): string
     {
@@ -62,38 +73,30 @@ class ProductService implements ModelViewConnector {
 
     protected function getIndexHeaders(): array
     {
-        return [];
-        // // Example:
-        // return $this->indexTable->addHeaderColumn(
-        //     title: 'Title',
-        //     sort: ['key' => 'title'],
-        // )->addHeaderColumn(
-        //     title: 'Author',
-        //     filter: ['key' => 'author', 'options' => User::all()->pluck('name', 'id')]
-        // )->addHeaderColumn(
-        //     title: 'Review Score',
-        // )->addHeaderColumn(
-        //     title: 'Actions'
-        // )->getHeaderRow();
+        return $this->indexTable->addHeaderColumn(
+            title: 'Product',
+            sort: ['key' => 'name'],
+        )->addHeaderColumn(
+            title: 'Category',
+        )->addHeaderColumn(
+            title: 'Actions'
+        )->getHeaderRow();
     }
 
     protected function getIndexColumns(): array
     {
-        return [];
-        // // Example:
-        // return $this->indexTable->addColumn(
-        //     fields: ['title'],
-        // )->addColumn(
-        //     fields: ['name'],
-        //     relation: 'author',
-        // )->addColumn(
-        //     fields: ['score'],
-        //     relation: 'reviewScore',
-        // )
-        // ->addActionColumn(
-        //     editRoute: $this->getEditRoute(),
-        //     deleteRoute: $this->getDestroyRoute(),
-        // )->getRow();
+
+        return $this->indexTable->addColumn(
+            fields: ['name', 'image'],
+            component: 'custom.product-image'
+        )->addColumn(
+            fields: ['name'],
+            relation: 'category'
+        )
+        ->addActionColumn(
+                editRoute: $this->getEditRoute(),
+                deleteRoute: $this->getDestroyRoute(),
+        )->getRow();
     }
 
     public function getAdvanceSearchFields(): array
@@ -183,20 +186,102 @@ class ProductService implements ModelViewConnector {
 
     private function formElements(): array
     {
-        return [];
-        // // Example:
-        // return [
-        //     'title' => FormHelper::makeInput(
-        //         inputType: 'text',
-        //         key: 'title',
-        //         label: 'Title',
-        //         properties: ['required' => true],
-        //     ),
-        //     'description' => FormHelper::makeTextarea(
-        //         key: 'description',
-        //         label: 'Description'
-        //     ),
-        // ];
+        return [
+            'name' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'name',
+                label: 'Product Name',
+                properties: ['required' => true],
+                fireInputEvent: true
+            ),
+            'slug' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'slug',
+                label: 'Product Slug',
+                properties: ['required' => true, 'readonly' => true],
+                updateOnEvents: ['name' => [
+                    'serviceclass' => ProductService::class,
+                    'method' => 'getslug'
+                ]]
+
+            ),
+            'category_id' => FormHelper::makeSelect(
+                key: 'category_id',
+                label: 'Select Category',
+                options: Category::all(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'name',
+                options_src: [CategoryService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+
+                ],
+            ),
+            'tags' => FormHelper::makeSelect(
+                key: 'tags',
+                label: 'Choose Tags',
+                options: Tag::all(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'tag',
+                options_src: [SizeService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                    'multiple' => true
+
+                ],
+            ),
+
+            // 'attribute' => FormHelper::makeSelect(
+            //     key: 'attribute',
+            //     label: 'Select All Available Attribute',
+            //     options: Attribute::all(),
+            //     options_type: 'collection',
+            //     options_id_key: 'id',
+            //     options_text_key: 'attribute',
+            //     options_src: [AttributeService::class, 'suggestList'],
+            //     properties: [
+
+            //         'multiple' => true
+
+            //     ],
+            // ),
+            // 'value' => FormHelper::makeSelect(
+            //     key: 'value',
+            //     label: 'Select All Available values',
+            //     options: AttributeValue::all(),
+            //     options_type: 'collection',
+            //     options_id_key: 'id',
+            //     options_text_key: 'value',
+            //     options_src: [AttributevalueService::class, 'suggestList'],
+            //     properties: [
+
+            //         'multiple' => true
+
+            //     ],
+            // ),
+            'description' => FormHelper::makeTextarea(
+                key: 'description',
+                label: 'Product Description'
+            ),
+            'image' => FormHelper::makeImageUploader(
+                key: 'image',
+                label: 'Product Image',
+                properties: [
+                    'required' => true
+                ]
+
+            ),
+            'imageSecond' => FormHelper::makeImageUploader(
+                key: 'imageSecond',
+                label: 'Product Image Second',
+                properties: [
+                    'required' => true
+                ]
+
+            )
+        ];
     }
 
     private function getQuery()
@@ -209,44 +294,64 @@ class ProductService implements ModelViewConnector {
         //     }
         // ]);
     }
-
+    public function getSlug($data)
+    {
+        return new InputUpdateResponse(
+            result: Str::slug($data['value']),
+            message: 'success',
+            isvalid: true
+        );
+    }
+    public function getFileFields()
+    {
+        return ['image', 'imageSecond'];
+    }
     public function getStoreValidationRules(): array
     {
-        return [];
-        // // Example:
-        // return [
-        //     'title' => ['required', 'string'],
-        //     'description' => ['required', 'string'],
-        // ];
+
+        return [
+            'name' => ['required', 'string'],
+            'slug' => ['required', 'string'],
+            'tags' => ['required', 'array'],
+            'description' => ['required', 'string'],
+            'category_id' => ['required'],
+           
+            'image' => ['required'],
+            'imageSecond' => ['required']
+        ];
     }
 
     public function getUpdateValidationRules($id): array
     {
-        return [];
-        // // Example:
-        // $arr = $this->getStoreValidationRules();
-        // return $arr;
+        return [
+            'name' => ['required', 'string'],
+            'slug' => ['required', 'string'],
+            'tags' => ['required', 'array'],
+            'description' => ['required', 'string'],
+            'category_id' => ['required'],
+           
+            'image' => ['required'],
+            'imageSecond' => ['required']
+        ];
     }
 
     public function processBeforeStore(array $data): array
     {
-        // // Example:
-        // $data['user_id'] = auth()->user()->id;
-
+        //dd($data);
         return $data;
     }
 
     public function processBeforeUpdate(array $data): array
     {
-        // // Example:
-        // $data['user_id'] = auth()->user()->id;
+        //    dd($data);
+        //    $attributes = $data['attribute'];
+        //    dd($attributes);
 
         return $data;
     }
 
     public function processAfterStore($instance): void
     {
-        //Do something with the created $instance
     }
 
     public function processAfterUpdate($oldInstance, $instance): void
@@ -256,19 +361,34 @@ class ProductService implements ModelViewConnector {
 
     public function buildCreateFormLayout(): array
     {
-        return (new ColumnLayout())->getLayout();
-        // // Example
-        //  $layout = (new ColumnLayout())
-        //     ->addElements([
-        //             (new RowLayout())
-        //                 ->addElements([
-        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('title'),
-        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('description'),
-        //                 ])
-        //         ]
-        //     );
-        // return $layout->getLayout();
+
+        $layout = (new ColumnLayout())
+            ->addElements(
+                [
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout(width: 'grow'))->addInputSlot('name'),
+                            (new ColumnLayout(width: 'grow'))->addInputSlot('slug'),
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout())->addInputSlot('category_id'),
+                            (new ColumnLayout())->addInputSlot('tags'),
+
+
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout())->addInputSlot('description'),
+
+                        ]),
+                    (new RowLayout())
+                        ->addElements([
+                            (new ColumnLayout())->addInputSlot('image'),
+                            (new ColumnLayout())->addInputSlot('imageSecond'),
+                        ])
+                ]
+            );
+        return $layout->getLayout();
     }
 }
-
-?>

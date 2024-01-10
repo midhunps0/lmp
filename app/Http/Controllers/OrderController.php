@@ -29,36 +29,45 @@ class OrderController extends SmartController
         // $this->itemsCount = 10;
         // $this->resultsName = 'results';
     }
-    public function orderIndex(){
-        $orders=Order::all();
-        $categories=Category::all();
-        return view('display.order',compact('orders','categories'));
-    }
-    public function checkout(Request $request){
-        $request->validate([
-            'total_price'=>'required|int'
-        ]);
-        $order=new Order;
-       
-        $cartItems=Cart::where('user_id',auth()->user()->id)->get();
-        $order->user_id=auth()->user()->id;
-        $order->total_price=$request->total_price;
-        $order->status='Order Confirmed';
-        $order->save();
-        foreach($cartItems as $item){
-        
-            $orderItem=new OrderItem;
-            $orderItem->order_id=$order->id;
-            $orderItem->product_id=$item->product->id;
-            $orderItem->count=$item->product->count;
-            $orderItem->price=$item->product->price;
-            $orderItem->save();
+    public function orderIndex()
+    {
+        $orders = Order::with('user.address')->where('user_id', auth()->user()->id)->get();
+        $orderItems = [];
+    
+        foreach ($orders as $order) {
+            $orderItems[$order->id] = $order->orderItem()->with('product')->orderBy('created_at')->get();
         }
-        $cartItems->delete();
-        return redirect()->back()->with('success','Order placed successfully');
+        $categories = Category::all();
+        return view('display.order', compact('orders', 'categories', 'orderItems'));
+    }
+    
+    public function checkout(Request $request)
+    {
+        $request->validate([
+            'total_price' => 'required'
+        ]);
+        $order = new Order;
+        $order->user_id = auth()->user()->id;
+        $order->total_price = $request->total_price;
+        $order->status = 'Order Placed';
+        $order->save();
+        //   dd($order);
+        $orderId = $order->id;
+        $cartItems = Cart::where('user_id', auth()->user()->id)->get();
+        foreach ($cartItems as $item) {
+            $orderItem = new OrderItem;
+            $orderItem->order_id = $orderId;
+            $orderItem->product_id = $item->product->id;
+            $orderItem->price = $item->price;
+            $orderItem->count = $item->count;
+            $orderItem->save();
+            $item->delete();
+        }
 
-       
-       
-        
+        return redirect('payments');
+    }
+    public function payments(Request $request){
+        $categories = Category::all();
+        return view('display.payments',['categories'=>$categories]);
     }
 }

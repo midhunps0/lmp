@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quantity>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Productvariant>
  */
-class QuantityFactory extends Factory
+class ProductvariantFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,8 +17,7 @@ class QuantityFactory extends Factory
     public function definition(): array
     {
         return [
-            'product_id'=>Product::inRandomOrder()->first()->id,
-            'quantity'=>10,
+            //
         ];
     }
 }

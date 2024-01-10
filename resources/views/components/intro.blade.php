@@ -32,6 +32,7 @@
                 </div>
                 <div class="col-des-7 col-tb-12 col-mb-12 banner-group">
                     <div class="line">
+                        
                         <div class="panel-block-row panel-block col-des-12 block703">
                             <div style=" margin-bottom:20px;">
                                 <div class="content-block promobanner-block">
@@ -108,3 +109,4 @@
             </div>
         </div>
     </div>
+<x-brands></x-brands>

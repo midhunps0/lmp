@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 use Modules\Ynotz\EasyAdmin\Traits\HasMVConnector;
@@ -31,43 +32,54 @@ class CartController extends SmartController
         // $this->resultsName = 'results';
     }
     public function addToCart(Request $request){
-        $request->validate([
-            'product_id'=>'required|exists:products,id',
-        ]);
-        $exsistingItem=Cart::where('user_id',auth()->user()->id)
-                        ->where('product_id',$request->product_id)
-                        ->first();
-        if($exsistingItem && $exsistingItem->count > 0){
-            return redirect()->back()->with('error','Item already in the  cart');
-
+        if(auth()->user()){
+            $request->validate([
+                'product_id'=>'required|exists:products,id',
+            ]);
+            $exsistingItem=Cart::where('user_id',auth()->user()->id)
+                            ->where('product_id',$request->product_id)
+                            ->first();
+            if($exsistingItem && $exsistingItem->count > 0){
+                return redirect()->back()->with('error','Item already in the  cart');
+    
+            }
+            
+            
+            $product = Product::find($request->product_id);
+            $totalQuantity=$product->quantity;
+            if($totalQuantity){
+                $cart=new Cart;
+                $cart->user_id=auth()->user()->id;
+                $cart->product_id=$product->id;
+                $cart->count=1;
+                $cart->price = $product->price;
+                $totalQuantity-=1;
+                $cart->save();
+                Wishlist::where('product_id',$cart->product_id)->delete();
+    
+                return redirect()->back()->with('success',"{$cart->product->name } added to the cart");
+            }
+            else{
+                return redirect()->back()->with('error','Out of Stock');
+            }
         }
-        
-        $totalQuantity=Quantity::where('product_id',$request->product_id)->value('quantity');
-        if($totalQuantity){
-            $cart=new Cart;
-            $cart->user_id=auth()->user()->id;
-            $cart->product_id=$request->product_id;
-            $cart->count=1;
-            $totalQuantity-=1;
-            $cart->save();
-            Wishlist::where('product_id',$cart->product_id)->delete();
-
-            return redirect()->back()->with('success',"{$cart->product->name } added to the cart");
-        }
-        else{
-            return redirect()->back()->with('error','Out of Stock');
-        }
+       
         
 
     }
     public function cartIndex(){
-        $categories=Category::all();
+        if(auth()->user()){
+            $categories=Category::all();
+        $addresses= Address::where('user_id',auth()->user()->id)->with('tag')->get();
         $cartItems=Cart::where('user_id',auth()->user()->id)->paginate(3);
-        return view('display.cart',['cartItems'=>$cartItems,'categories'=>$categories]);
+        return view('display.cart',['cartItems'=>$cartItems,'categories'=>$categories,'addresses'=>$addresses]);
+        }
+        
     }
 
     public function plusCart(Product $product){
-        $totalQuantity = Quantity::where('product_id', $product->id)->value('quantity');
+        
+        $totalQuantity = $product->quantity;
 
         if ($totalQuantity > 0){
             // Retrieve the cart item and update the count
@@ -75,6 +87,7 @@ class CartController extends SmartController
    
             if ($cartItem) {
                 $cartItem->count += 1;
+                $cartItem->price =$cartItem->price * $cartItem->count;
                 $totalQuantity-=1;
                 $cartItem->save();
    
@@ -86,13 +99,14 @@ class CartController extends SmartController
         }
     }
     public function minusCart(Product $product){
-        $totalQuantity = Quantity::where('product_id', $product->id)->value('quantity');
+        $totalQuantity = $product->quantity;
 
         
             $cartItem = Cart::where('product_id', $product->id)->first();
    
             if ($cartItem) {
                 $cartItem->count -= 1;
+                $cartItem->price =$cartItem->price * $cartItem->count;
                 $totalQuantity+=1;
                 if($cartItem->count == 0){
                     $cartItem->delete();
@@ -108,7 +122,7 @@ class CartController extends SmartController
         
     }
     public function deleteCart(Product $product){
-        $totalQuantity = Quantity::where('product_id', $product->id)->value('quantity');
+        $totalQuantity = $product->quantity;
 
         
             $cartItem = Cart::where('product_id', $product->id)->first();

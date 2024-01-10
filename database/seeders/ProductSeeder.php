@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -14,20 +15,19 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $categories=Category::all();
+        $categories = Category::inRandomOrder()->get();
         
-        foreach($categories as $category){
-            
-            for($i=0;$i<20;$i++){
-                $name=fake()->name;
-                Product::create([
-                    'category_id'=>$category->id,
-                    'name'=>$name,
-                    'slug'=>Str::slug($name),
-                    'price'=>'499.80',
-                    'description'=>fake()->paragraphs(2,true),
-                ]);
-            }
+        $products = config('product.products');
+        
+        foreach ($products as $product) {
+            Product::create([
+                'product_type_id'=>ProductType::inRandomOrder()->first()->id,
+                'category_id' => $categories->first()->id,
+                'name' => $product['name'],
+                'slug' => $product['slug'],
+                'description' => $product['description'],
+                
+            ]);
         }
     }
 }

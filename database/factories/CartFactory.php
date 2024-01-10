@@ -21,6 +21,7 @@ class CartFactory extends Factory
             'user_id'=>User::inRandomOrder()->first()->id,
             'product_id'=>Product::inRandomOrder()->first()->id,
             'count'=>10,
+            'price'=>10.0,
         ];
     }
 }

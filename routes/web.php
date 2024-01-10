@@ -1,13 +1,24 @@
 <?php
 
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\AddressTagController;
+use App\Http\Controllers\AttributeController;
+use App\Http\Controllers\AttributevalueController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductAttributeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductTagController;
+use App\Http\Controllers\ProductTypeController;
+use App\Http\Controllers\ProductvariantController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuantityController;
+use App\Http\Controllers\SizeController;
 use App\Http\Controllers\WishlistController;
 use Modules\Ynotz\EasyAdmin\Services\RouteHelper;
 use Modules\Ynotz\AppSettings\Http\Controllers\AppSettingsController;
@@ -25,7 +36,7 @@ use App\Models\Category;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('index');
 });
 
 Route::get('/dashboard', function () {
@@ -57,6 +68,45 @@ RouteHelper::getEasyRoutes(
     modelName:'Wishlist',
     controller:WishlistController::class
 );
+RouteHelper::getEasyRoutes(
+    modelName:'Quantity',
+    controller:QuantityController::class
+);
+RouteHelper::getEasyRoutes(
+    modelName:'Tag',
+    controller:TagController::class
+);
+RouteHelper::getEasyRoutes(
+    modelName:'ProductTag',
+    controller:ProductTagController::class
+);
+RouteHelper::getEasyRoutes(
+    modelName:'Address',
+    controller:AddressController::class
+);
+RouteHelper::getEasyRoutes(
+    modelName:'AddressTag',
+    controller:AddressTagController::class
+);
+RouteHelper::getEasyRoutes(
+    modelName:'Size',
+    controller:SizeController::class
+);
+RouteHelper::getEasyRoutes(
+    modelName:'Attribute',
+    controller:AttributeController::class
+);
+RouteHelper::getEasyRoutes(
+    modelName:'ProductType',
+    controller:ProductTypeController::class
+);
+
+RouteHelper::getEasyRoutes(
+    modelName:'Productvariant',
+    controller:ProductvariantController::class
+);
+
+
 
 Route::get('/index',[ProductController::class,'productIndex'])->name('productIndex');
 Route::get('/wishlist/items',[WishlistController::class,'wishlistIndex'])->name('wishlistIndex');
@@ -71,10 +121,11 @@ Route::post('/deleteWishlist/{product}',[WishlistController::class,'removeWishli
 Route::get('/cart/items',[CartController::class,'cartIndex'])->name('cartIndex');
 
 
-Route::post('/checkout',[OrderController::class,'checkout'])->name('checkout');
+Route::post('/checkout{cart}',[OrderController::class,'checkout'])->name('checkout');
 
 Route::get('/orders',[OrderController::class,'orderIndex'])->name('orderIndex');
 
+Route::get('/payments',[OrderController::class,'payments'])->name('payments');
 
 Route::get('/showProducts/{category}',[CategoryController::class,'showProducts'])->name('showProducts');
 
@@ -82,4 +133,11 @@ Route::get('/productDetail/{product}',[ProductController::class,'productShow'])-
 
 Route::post('/search',[ProductController::class,'search'])->name('search');
 
+Route::post('/setAddress',[AddressController::class,'setAddress'])->name('setAddress');
+
 require __DIR__.'/auth.php';
+
+
+
+// Route::get('/checkout', 'StripePaymentController@checkout');
+// Route::post('/checkout', 'StripePaymentController@afterpayment')->name('stripe.payment');
