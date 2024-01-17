@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Attribute;
@@ -12,7 +13,8 @@ use Modules\Ynotz\EasyAdmin\RenderDataFormats\EditPageData;
 use Modules\Ynotz\EasyAdmin\Services\ColumnLayout;
 use Modules\Ynotz\EasyAdmin\Services\RowLayout;
 
-class AttributeService implements ModelViewConnector {
+class AttributeService implements ModelViewConnector
+{
     use IsModelViewConnector;
     private $indexTable;
 
@@ -41,13 +43,13 @@ class AttributeService implements ModelViewConnector {
 
     protected function relations()
     {
-        
+
         return [
-            'values' => [
+            'attributeValue' => [
                 'search_column' => 'id',
                 'filter_column' => 'id',
                 'sort_column' => 'id',
-            ]
+            ],
         ];
     }
     protected function getPageTitle(): string
@@ -57,13 +59,13 @@ class AttributeService implements ModelViewConnector {
 
     protected function getIndexHeaders(): array
     {
-        
+
         return $this->indexTable->addHeaderColumn(
             title: 'Attribute',
             sort: ['key' => 'attribute'],
         )->addHeaderColumn(
-            title:'values',
-            filter: ['key' => 'values', 'options' => AttributeValue::pluck('value')]
+            title: 'Values',
+
         )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
@@ -71,13 +73,13 @@ class AttributeService implements ModelViewConnector {
 
     protected function getIndexColumns(): array
     {
-       
         return $this->indexTable->addColumn(
             fields: ['attribute'],
-       
+
         )->addColumn(
-            fields:['value'],
-            relation:'values'
+            fields: ['value'],
+            relation: 'attributeValue'
+
         )
         ->addActionColumn(
             editRoute: $this->getEditRoute(),
@@ -172,7 +174,7 @@ class AttributeService implements ModelViewConnector {
 
     private function formElements(): array
     {
-        
+
         return [
             'attribute' => FormHelper::makeInput(
                 inputType: 'text',
@@ -180,12 +182,20 @@ class AttributeService implements ModelViewConnector {
                 label: 'Attribute',
                 properties: ['required' => true],
             ),
-            'value' => FormHelper::makeInput(
-                inputType: 'text',
+            'value' => FormHelper::makeSelect(
                 key: 'value',
-                label: 'Value',
-                properties: ['required' => true],
-            ),
+                label: 'Select Values',
+                options: AttributeValue::all(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'value',
+                options_src: [AttributeValueService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                    'multiple' => true
+
+                ],
+            )
         ];
     }
 
@@ -202,7 +212,7 @@ class AttributeService implements ModelViewConnector {
 
     public function getStoreValidationRules(): array
     {
-        
+
         return [
             'attribute' => ['required', 'string'],
             'value' => ['required', 'string'],
@@ -245,9 +255,10 @@ class AttributeService implements ModelViewConnector {
 
     public function buildCreateFormLayout(): array
     {
-        
-         $layout = (new ColumnLayout())
-            ->addElements([
+
+        $layout = (new ColumnLayout())
+            ->addElements(
+                [
                     (new RowLayout())
                         ->addElements([
                             (new ColumnLayout(width: '1/2'))->addInputSlot('attribute'),
@@ -258,5 +269,3 @@ class AttributeService implements ModelViewConnector {
         return $layout->getLayout();
     }
 }
-
-?>

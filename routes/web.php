@@ -19,6 +19,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuantityController;
 use App\Http\Controllers\SizeController;
+use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\WishlistController;
 use Modules\Ynotz\EasyAdmin\Services\RouteHelper;
 use Modules\Ynotz\AppSettings\Http\Controllers\AppSettingsController;
@@ -88,10 +89,7 @@ RouteHelper::getEasyRoutes(
     modelName:'AddressTag',
     controller:AddressTagController::class
 );
-RouteHelper::getEasyRoutes(
-    modelName:'Size',
-    controller:SizeController::class
-);
+
 RouteHelper::getEasyRoutes(
     modelName:'Attribute',
     controller:AttributeController::class
@@ -113,9 +111,9 @@ Route::get('/wishlist/items',[WishlistController::class,'wishlistIndex'])->name(
 
 Route::post('/addToCart',[CartController::class,'addToCart'])->name('addToCart');
 
-Route::post('/plusCart/{product}',[CartController::class,'plusCart'])->name('plusCart');
-Route::post('/minusCart/{product}',[CartController::class,'minusCart'])->name('minusCart');
-Route::post('/deleteCart/{product}',[CartController::class,'deleteCart'])->name('deleteCart');
+Route::post('/plusCart/{variant}',[CartController::class,'plusCart'])->name('plusCart');
+Route::post('/minusCart/{variant}',[CartController::class,'minusCart'])->name('minusCart');
+Route::post('/deleteCart/{variant}',[CartController::class,'deleteCart'])->name('deleteCart');
 Route::post('/addToWishlist',[WishlistController::class,'addToWishlist'])->name('addToWishlist');
 Route::post('/deleteWishlist/{product}',[WishlistController::class,'removeWishlist'])->name('removeWishlist');
 Route::get('/cart/items',[CartController::class,'cartIndex'])->name('cartIndex');
@@ -135,6 +133,12 @@ Route::post('/search',[ProductController::class,'search'])->name('search');
 
 Route::post('/setAddress',[AddressController::class,'setAddress'])->name('setAddress');
 
+Route::get('/variants/{variant}',[ProductvariantController::class,'productVariantDetails'])->name('productVariantDetails');
+
+
+Route::post('/checkout',[StripePaymentController::class,'checkout'])->name('checkout');
+Route::get('/checkout/success',[StripePaymentController::class,'success'])->name('checkout.success');
+Route::get('/checkout/cancel',[StripePaymentController::class,'cancel'])->name('checkout.cancel');
 require __DIR__.'/auth.php';
 
 

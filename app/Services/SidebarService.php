@@ -76,12 +76,13 @@ class SidebarService implements SidebarServiceInterface
             ],
             [
                 'type' => 'menu_item',
-                'title' => 'Product Quantities',
-                'route' => 'quantities.index',
+                'title' => 'Product variants',
+                'route' => 'productvariants.index',
                 'route_params' => [],
                 'icon' => 'easyadmin::icons.users',
-                'show' => $this->showRoles()
+                'show' => $this->showProductVariants()
             ],
+          
             [
                 'type' => 'menu_item',
                 'title' => 'Tags',
@@ -107,23 +108,9 @@ class SidebarService implements SidebarServiceInterface
                 'icon' => 'easyadmin::icons.users',
                 'show' => $this->showAddressTags()
             ],
-            [
-                'type' => 'menu_item',
-                'title' => 'Product Sizes',
-                'route' => 'sizes.index',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => $this->showProductSizes()
-            ],
+        
            
-            [
-                'type' => 'menu_item',
-                'title' => 'Product variants',
-                'route' => 'productvariants.index',
-                'route_params' => [],
-                'icon' => 'easyadmin::icons.users',
-                'show' => $this->showProductVariants()
-            ],
+        
             [
                 'type' => 'menu_item',
                 'title' => 'Attributes',

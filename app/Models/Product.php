@@ -23,20 +23,12 @@ class Product extends Model
     public function orderitem(){
         return $this->hasMany(OrderItem::class);
     }
-    public function cart(){
-        return $this->hasMany(Cart::class);
-    }
-
+   
     public function tags(){
         return $this->belongsToMany(Tag::class);
     }
-    public function wishlist(){
-        return $this->hasMany(Wishlist::class);
-    }
-    public function sizes(){
-        return $this->belongsToMany(Size::class);
-    }
-
+   
+    
     public function getMediaStorage(): array
     {
         return[
@@ -50,10 +42,9 @@ class Product extends Model
             ]
         ];
     }
-    public function attributes(){
-        return $this->belongsToMany(Attribute::class,'product_attributes','product_id','attribute_id');
-    }
-
+   public function productTypes(){
+    return $this->belongsTo(ProductType::class);
+   }
     public function image(): Attribute
     {
         return Attribute::make(

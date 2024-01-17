@@ -17,7 +17,7 @@ class AttributeSeeder extends Seeder
         foreach($attributes as  $attribute=>$value){
             Attribute::create([
                 "attribute"=>$attribute,
-                'values'=>json_encode($value)
+                
                 
             ]);
         }

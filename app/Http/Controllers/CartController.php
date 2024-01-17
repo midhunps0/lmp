@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 use Modules\Ynotz\EasyAdmin\Traits\HasMVConnector;
 use Modules\Ynotz\SmartPages\Http\Controllers\SmartController;
 use App\Models\Cart;
-use App\Models\Quantity;
-use App\Models\Product;
 use App\Models\Wishlist;
 use App\Models\Category;
+use App\Models\Productvariant;
+use Stripe\Stripe;
 
 class CartController extends SmartController
 {
@@ -34,10 +34,10 @@ class CartController extends SmartController
     public function addToCart(Request $request){
         if(auth()->user()){
             $request->validate([
-                'product_id'=>'required|exists:products,id',
+                'product_variant_id'=>'required|exists:products,id',
             ]);
             $exsistingItem=Cart::where('user_id',auth()->user()->id)
-                            ->where('product_id',$request->product_id)
+                            ->where('product_variant_id',$request->product_variant_id)
                             ->first();
             if($exsistingItem && $exsistingItem->count > 0){
                 return redirect()->back()->with('error','Item already in the  cart');
@@ -45,19 +45,19 @@ class CartController extends SmartController
             }
             
             
-            $product = Product::find($request->product_id);
-            $totalQuantity=$product->quantity;
+            $productVariant = Productvariant::find($request->product_variant_id);
+            $totalQuantity=$productVariant->quantity;
             if($totalQuantity){
                 $cart=new Cart;
                 $cart->user_id=auth()->user()->id;
-                $cart->product_id=$product->id;
+                $cart->product_variant_id=$productVariant->id;
                 $cart->count=1;
-                $cart->price = $product->price;
+                $cart->price = $productVariant->price;
                 $totalQuantity-=1;
                 $cart->save();
-                Wishlist::where('product_id',$cart->product_id)->delete();
+                Wishlist::where('product_variant_id',$cart->product_id)->delete();
     
-                return redirect()->back()->with('success',"{$cart->product->name } added to the cart");
+                return redirect()->back()->with('success',"{$cart->productvariant->name } added to the cart");
             }
             else{
                 return redirect()->back()->with('error','Out of Stock');
@@ -77,13 +77,13 @@ class CartController extends SmartController
         
     }
 
-    public function plusCart(Product $product){
+    public function plusCart(Productvariant $variant){
         
-        $totalQuantity = $product->quantity;
+        $totalQuantity = $variant->quantity;
 
         if ($totalQuantity > 0){
             // Retrieve the cart item and update the count
-            $cartItem = Cart::where('product_id', $product->id)->first();
+            $cartItem = Cart::where('product_variant_id', $variant->id)->first();
    
             if ($cartItem) {
                 $cartItem->count += 1;
@@ -91,18 +91,18 @@ class CartController extends SmartController
                 $totalQuantity-=1;
                 $cartItem->save();
    
-                return redirect()->back()->with('success', "Cart has {$cartItem->count} of {$cartItem->product->name }");
+                return redirect()->back()->with('success', "Cart has {$cartItem->count} of {$cartItem->productvariant->name }");
             }
         } 
         else {
             return redirect()->back()->with('error', 'Out of Stock');
         }
     }
-    public function minusCart(Product $product){
-        $totalQuantity = $product->quantity;
+    public function minusCart(Productvariant $variant){
+        $totalQuantity = $variant->quantity;
 
         
-            $cartItem = Cart::where('product_id', $product->id)->first();
+            $cartItem = Cart::where('product_variant_id', $variant->id)->first();
    
             if ($cartItem) {
                 $cartItem->count -= 1;
@@ -117,19 +117,21 @@ class CartController extends SmartController
                 
                 
    
-                return redirect()->back()->with('success',  "Cart has {$cartItem->count} of {$cartItem->product->name }");
+                return redirect()->back()->with('success',  "item count modified");
             }
         
     }
-    public function deleteCart(Product $product){
-        $totalQuantity = $product->quantity;
+    public function deleteCart(Productvariant $variant){
+        $totalQuantity = $variant->quantity;
 
         
-            $cartItem = Cart::where('product_id', $product->id)->first();
+            $cartItem = Cart::where('product_variant_id', $variant->id)->first();
             $totalQuantity+=$cartItem->count;
             $cartItem->delete();
             return redirect()->back()->with('success', 'Item deleted from  cart');
        
     }
+
+   
 
 }

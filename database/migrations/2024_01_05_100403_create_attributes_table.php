@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
             $table->string('attribute');
-            $table->json('values');
-          
             $table->timestamps();
         });
     }

@@ -14,9 +14,9 @@
             @foreach($cartItems as $cartItem)
             <div id="product" class="sm:my-4 relative transition-transform duration-300 ease-in-out w-full flex lg:mb-10 p-10 shadow flex-col">
                 <div class="absolute top-8 flex justify-center items-center right-2">
-                    <form action="{{ route('minusCart' ,['product' => $cartItem->product->id ]) }}" method="post">
+                    <form action="{{ route('minusCart' ,['variant' => $cartItem->productvariant->id ]) }}" method="post">
                         @csrf
-                        <input type="hidden" name="product_id" value="{{ $cartItem->product->id }}">
+                        <input type="hidden" name="product_id" value="{{ $cartItem->productvariant->id }}">
                         <button type="submit" class="flex">
                             <li class="text-base   transition-transform duration-300 ease-in-out">
                                 <a href="#" id="cartItem" class="transition-transform duration-300 ease-in-out font-light hover:text-dark-color">
@@ -27,9 +27,9 @@
                     </form>
                     <input type="text" name="" id="" readonly value="{{ $cartItem->count }}" class="border-none text-center w-2">
 
-                    <form x-data="{ disabled: {{ $cartItem->product->quantity <= 0 ? 'true' : 'false' }} }" action="{{ route('plusCart', ['product' => $cartItem->product->id]) }}" method="post">
+                    <form x-data="{ disabled: {{ $cartItem->productvariant->quantity <= 0 ? 'true' : 'false' }} }" action="{{ route('plusCart', ['variant' => $cartItem->productvariant->id]) }}" method="post">
                         @csrf
-                        <input type="hidden" name="product_id" value="{{ $cartItem->product->id }}">
+                        <input type="hidden" name="product_id" value="{{ $cartItem->productvariant->id }}">
 
                         <button type="submit" class="flex" :disabled="disabled" @mouseover="disabled && tooltip = true" @mouseout="tooltip = false">
                             <li class="text-base transition-transform duration-300 ease-in-out">
@@ -45,9 +45,9 @@
                     </form>
 
                 </div>
-                <form action="{{ route('deleteCart' ,['product' => $cartItem->product->id ]) }}" method="post">
+                <form action="{{ route('deleteCart' ,['variant' => $cartItem->productvariant->id ]) }}" method="post">
                     @csrf
-                    <input type="hidden" name="product_id" value="{{ $cartItem->product->id }}">
+                    <input type="hidden" name="product_varinat_id" value="{{ $cartItem->productvariant->id }}">
                     <button type="submit" class="flex">
                         <li class="text-base mr-4 absolute right-4 top-28 hidden transition-transform duration-300 ease-in-out">
                             <a href="#" id="cartItem" class="transition-transform duration-300 ease-in-out font-light hover:text-dark-color">
@@ -61,17 +61,17 @@
                         <i class="ri-share-forward-line text-white  p-2 rounded-full bg-primary-color bg-opacity-15 backdrop-blur-md shadow-md text-center"></i>
                     </a>
                 </li>
-                <img alt="{{asset('images/product_01.jpg')}}" src="{{  $cartItem->product->getSingleMediaUrl('image') }}" class="w-40 h-40 rounded">
+                <img alt="{{asset('images/product_01.jpg')}}" src="{{  $cartItem->productvariant->getSingleMediaUrl('image') }}" class="w-40 h-40 rounded">
                 <!-- <img src="{{asset('images/product_01.jpg')}}" alt="" class="w-40 h-40 rounded"> -->
 
                 <div class="product_details flex bg-white flex-col ">
 
-                    <h4 class="py-2 text-2xl ">{{$cartItem->product->name}}</h4>
+                    <h4 class="py-2 text-2xl ">{{$cartItem->productvariant->name}}</h4>
 
-                    <p class="py-2 text-base ">Item Price: <i class="fa-solid fa-indian-rupee-sign"></i> {{$cartItem->product->price}}</p>
+                    <p class="py-2 text-base ">Item Price: <i class="fa-solid fa-indian-rupee-sign"></i> {{$cartItem->productvariant->price}}</p>
                     <p class="py-2 text-base ">Qty: {{$cartItem->count}}</p>
                     @php
-                    $itemPrice=$cartItem->product->price*$cartItem->count;
+                    $itemPrice=$cartItem->productvariant->price*$cartItem->count;
                     @endphp
                     <p class="py-2 text-base "><span>Total: </span><i class="fa-solid fa-indian-rupee-sign"></i> {{$itemPrice}}</p>
                 </div>
@@ -83,9 +83,9 @@
             <p class="text-center mb-8 text-dark-color text-sm font-semibold">Cash on Delivery</p>
             @foreach($cartItems as $cartItem)
             <div class="flex justify-between items-center">
-                <p>{{$cartItem->product->name}}</p>
+                <p>{{$cartItem->productvariant->name}}</p>
                 @php
-                $itemPrice=$cartItem->product->price*$cartItem->count;
+                $itemPrice=$cartItem->productvariant->price*$cartItem->count;
                 @endphp
                 <p><span>Total: </span><i class="fa-solid fa-indian-rupee-sign"></i> {{$itemPrice}}</p>
             </div>
@@ -94,7 +94,7 @@
             @php
             $totalPrice = 0;
             foreach($cartItems as $cartItem) {
-            $itemPrice = $cartItem->product->price * $cartItem->count;
+            $itemPrice = $cartItem->productvariant->price * $cartItem->count;
             $totalPrice += $itemPrice;
             }
             @endphp
@@ -128,7 +128,16 @@
             <div class="">
                 <p class="py-2 text-center">Or use other checkout methods</p>
                 <div class="flex">
-                    <a href="" class="bg-yellow-400 w-full text-center h-10 py-2 my-2"><span class="italic text-blue-950 font-bold">Pay</span><span class="italic text-blue-400 font-bold">Pal</span></a>
+                    <form action="{{ route('checkout')}}" method="post">
+                        @csrf
+                        <button type="submit">
+                            <a href="" class="bg-yellow-400 w-full text-center h-10 py-2 my-2">
+                                <span class="italic text-blue-950 font-bold">Pay</span>
+                                <span class="italic text-blue-400 font-bold">Pal</span>
+                            </a>
+                        </button>
+                    </form>
+                    
 
                 </div>
             </div>
@@ -143,14 +152,14 @@
         <div class="my-4">
             @foreach($cartItems as $cartItem)
             <div class="product_details flex mb-2 bg-white justify-between items-center">
-                <img alt="{{asset('images/product_01.jpg')}}" src="{{  $cartItem->product->getSingleMediaUrl('image') }}" class="w-24 h-24 rounded">
-                <h4 class="text-xl ">{{ $cartItem->product->name }}</h4>
+                <img alt="{{asset('images/product_01.jpg')}}" src="{{  $cartItem->productvariant->getSingleMediaUrl('image') }}" class="w-24 h-24 rounded">
+                <h4 class="text-xl ">{{ $cartItem->productvariant->name }}</h4>
 
-                <p class="text-base"><span>Price: </span><i class="fa-solid fa-indian-rupee-sign"></i> {{ $cartItem->product->price }}</p>
+                <p class="text-base"><span>Price: </span><i class="fa-solid fa-indian-rupee-sign"></i> {{ $cartItem->productvariant->price }}</p>
                 <p class="text-base"><span>Count: </span> {{ $cartItem->count }}</p>
 
                 @php
-                $itemPrice = $cartItem->product->price * $cartItem->count;
+                $itemPrice = $cartItem->productvariant->price * $cartItem->count;
                 @endphp
 
                 <p class="text-base"><span>Total: </span><i class="fa-solid fa-indian-rupee-sign"></i> {{ $itemPrice }}</p>
@@ -161,7 +170,7 @@
             @php
             $totalPrice = 0;
             foreach($cartItems as $cartItem) {
-            $itemPrice = $cartItem->product->price * $cartItem->count;
+            $itemPrice = $cartItem->productvariant->price * $cartItem->count;
             $totalPrice += $itemPrice;
             }
             @endphp

@@ -11,10 +11,12 @@ class ProductType extends Model
 
     protected $guarded=[];
 
-    protected $casts = [
-        'applicable_attributes' => 'array',
-    ];
-    public function attributes(){
-        return $this->hasMany(Attribute::class);
+   
+  
+    public function product(){
+        return $this->hasMany(Product::class);
     }
+     public function attributes(){
+        return $this->hasMany(Attribute::class);
+     }
 }

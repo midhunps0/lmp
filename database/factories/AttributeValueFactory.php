@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Size>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AttributeValue>
  */
-class SizeFactory extends Factory
+class AttributeValueFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class SizeFactory extends Factory
     public function definition(): array
     {
         return [
-            'size'=>''
+            //
         ];
     }
 }

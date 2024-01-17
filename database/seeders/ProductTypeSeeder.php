@@ -19,7 +19,7 @@ class ProductTypeSeeder extends Seeder
             $randomAttributeIds = Attribute::pluck('id')->random(2);
             ProductType::create([
                 'product_type'=>$type,
-                'applicable_attributes'=>$randomAttributeIds,
+                'attribute_id'=>Attribute::inRandomorder()->first()->id,
                 'description'=>fake()->paragraphs(2,true)
             ]);
             

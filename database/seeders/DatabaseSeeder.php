@@ -19,11 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(CategorySeeder::class);
         $this->call(AddressTagSeeder::class);
-        $this->call(SizeSeeder::class);
+       
         $this->call(AttributeSeeder::class);
         $this->call(ProductTypeSeeder::class);
          $this->call(ProductSeeder::class);
-      
+      $this->call(ProductvariantSeeder::class);
+      $this->call(AttributeValueSeeder::class);
         // $this->call(OrderSeeder::class);
         // $this->call(OrderItemSeeder::class);
         // $this->call(AddressSeeder::class);

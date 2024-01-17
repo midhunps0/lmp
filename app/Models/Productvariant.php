@@ -14,6 +14,12 @@ class Productvariant extends Model
     public function product(){
         return $this->belongsTo(Product::class);
     }
+    public function cart(){
+        return $this->hasMany(Cart::class);
+    }
+    public function wishlist(){
+        return $this->hasMany(Wishlist::class);
+    }
     public function attributes(){
         return $this->belongsToMany(Attribute::class,'products_attributes','productvariant_id','attribute_id');
     }

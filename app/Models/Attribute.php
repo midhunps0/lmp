@@ -5,17 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Attribute extends Model
 {
     use HasFactory;
-    protected $fillable = ['attribute', 'value'];
+    protected $guarded = [];
 
-    // Specify the 'value' attribute as JSON
-    protected $casts = [
-        'value' => 'json',
-    ];
-    public function productTypes(){
+    public function productType(){
         return $this->belongsTo(ProductType::class);
     }
-  
+    public function attributeValue(){
+        return $this->hasMany(AttributeValue::class);
+    }
+
+    // Specify the 'value' attribute as JSON
+    
+   
+   
 }

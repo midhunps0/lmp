@@ -7,6 +7,7 @@ use App\Models\AttributeValue;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductTag;
+use App\Models\ProductType;
 use App\Models\Tag;
 
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
@@ -63,6 +64,11 @@ class ProductService implements ModelViewConnector
                 'filter_column' => 'id',
                 'sort_column' => 'id',
             ],
+            'productTypes'=>[
+                'search_column' => 'id',
+                'filter_column' => 'id',
+                'sort_column' => 'id',
+            ]
             
         ];
     }
@@ -79,6 +85,8 @@ class ProductService implements ModelViewConnector
         )->addHeaderColumn(
             title: 'Category',
         )->addHeaderColumn(
+            title: 'Product Type'
+        )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
     }
@@ -92,6 +100,9 @@ class ProductService implements ModelViewConnector
         )->addColumn(
             fields: ['name'],
             relation: 'category'
+        )->addColumn(
+            fields: ['product_type_id'],
+            relation: 'productTypes'
         )
         ->addActionColumn(
                 editRoute: $this->getEditRoute(),
@@ -152,7 +163,8 @@ class ProductService implements ModelViewConnector
                 success_redirect_route: 'products.index',
                 items: $this->getCreateFormElements(),
                 layout: $this->buildCreateFormLayout(),
-                label_position: 'top'
+                label_position: 'top',
+                width:'full'
             )
         );
     }
@@ -168,7 +180,8 @@ class ProductService implements ModelViewConnector
                 action_route_params: ['id' => $id],
                 success_redirect_route: 'products.index',
                 items: $this->getEditFormElements(),
-                label_position: 'top'
+                label_position: 'top',
+                width:'full'
             ),
             instance: $this->getQuery()->where('id', $id)->get()->first()
         );
@@ -205,6 +218,19 @@ class ProductService implements ModelViewConnector
                 ]]
 
             ),
+            'product_type_id' => FormHelper::makeSelect(
+                key: 'product_type_id',
+                label: 'Choose Product Type',
+                options: ProductType::all(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'product_type',
+                options_src: [ProductTypeService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+
+                ],
+            ),
             'category_id' => FormHelper::makeSelect(
                 key: 'category_id',
                 label: 'Select Category',
@@ -225,7 +251,7 @@ class ProductService implements ModelViewConnector
                 options_type: 'collection',
                 options_id_key: 'id',
                 options_text_key: 'tag',
-                options_src: [SizeService::class, 'suggestList'],
+                options_src: [TagService::class, 'suggestList'],
                 properties: [
                     'required' => true,
                     'multiple' => true
@@ -317,7 +343,8 @@ class ProductService implements ModelViewConnector
             'category_id' => ['required'],
            
             'image' => ['required'],
-            'imageSecond' => ['required']
+            'imageSecond' => ['required'],
+            'product_type_id'=>['required'],
         ];
     }
 
@@ -331,7 +358,8 @@ class ProductService implements ModelViewConnector
             'category_id' => ['required'],
            
             'image' => ['required'],
-            'imageSecond' => ['required']
+            'imageSecond' => ['required'],
+            'product_type_id'=>['required'],
         ];
     }
 
@@ -367,20 +395,20 @@ class ProductService implements ModelViewConnector
                 [
                     (new RowLayout())
                         ->addElements([
-                            (new ColumnLayout(width: 'grow'))->addInputSlot('name'),
-                            (new ColumnLayout(width: 'grow'))->addInputSlot('slug'),
+                            (new ColumnLayout())->addInputSlot('name'),
+                            (new ColumnLayout())->addInputSlot('slug'),
                         ]),
                     (new RowLayout())
                         ->addElements([
-                            (new ColumnLayout())->addInputSlot('category_id'),
-                            (new ColumnLayout())->addInputSlot('tags'),
+                            (new ColumnLayout(width:'1/2'))->addInputSlot('category_id'),
+                            (new ColumnLayout(width:'1/2'))->addInputSlot('tags'),
 
 
                         ]),
                     (new RowLayout())
                         ->addElements([
                             (new ColumnLayout())->addInputSlot('description'),
-
+                            (new ColumnLayout())->addInputSlot('product_type_id'),
                         ]),
                     (new RowLayout())
                         ->addElements([

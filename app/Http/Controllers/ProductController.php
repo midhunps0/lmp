@@ -42,9 +42,8 @@ class ProductController extends SmartController
     public function productShow(Product $product)
     {
         $categories = Category::all();
-
-
-        return view('display.product-details', ['categories' => $categories, 'product' => $product]);
+        $productVariants = $product->productvariants;
+        return view('display.product-details', ['categories' => $categories, 'product' => $product,'productVariants'=>$productVariants]);
     }
 
 

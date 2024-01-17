@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\Size;
+use App\Models\AttributeValue;
 use Modules\Ynotz\EasyAdmin\Services\FormHelper;
 use Modules\Ynotz\EasyAdmin\Services\IndexTable;
 use Modules\Ynotz\EasyAdmin\Traits\IsModelViewConnector;
@@ -11,13 +11,13 @@ use Modules\Ynotz\EasyAdmin\RenderDataFormats\EditPageData;
 use Modules\Ynotz\EasyAdmin\Services\ColumnLayout;
 use Modules\Ynotz\EasyAdmin\Services\RowLayout;
 
-class SizeService implements ModelViewConnector {
+class AttributeValueService implements ModelViewConnector {
     use IsModelViewConnector;
     private $indexTable;
 
     public function __construct()
     {
-        $this->modelClass = Size::class;
+        $this->modelClass = AttributeValue::class;
         $this->indexTable = new IndexTable();
         $this->selectionEnabled = true;
 
@@ -57,30 +57,43 @@ class SizeService implements ModelViewConnector {
     }
     protected function getPageTitle(): string
     {
-        return "Sizes";
+        return "AttributeValues";
     }
 
     protected function getIndexHeaders(): array
     {
-        
-        return $this->indexTable->addHeaderColumn(
-            title: 'Size',
-            sort: ['key' => 'size'],
-        )->addHeaderColumn(
-            title: 'Actions'
-        )->getHeaderRow();
+        return [];
+        // // Example:
+        // return $this->indexTable->addHeaderColumn(
+        //     title: 'Title',
+        //     sort: ['key' => 'title'],
+        // )->addHeaderColumn(
+        //     title: 'Author',
+        //     filter: ['key' => 'author', 'options' => User::all()->pluck('name', 'id')]
+        // )->addHeaderColumn(
+        //     title: 'Review Score',
+        // )->addHeaderColumn(
+        //     title: 'Actions'
+        // )->getHeaderRow();
     }
 
     protected function getIndexColumns(): array
     {
-       
-        return $this->indexTable->addColumn(
-            fields: ['size'],
-        )
-        ->addActionColumn(
-            editRoute: $this->getEditRoute(),
-            deleteRoute: $this->getDestroyRoute(),
-        )->getRow();
+        return [];
+        // // Example:
+        // return $this->indexTable->addColumn(
+        //     fields: ['title'],
+        // )->addColumn(
+        //     fields: ['name'],
+        //     relation: 'author',
+        // )->addColumn(
+        //     fields: ['score'],
+        //     relation: 'reviewScore',
+        // )
+        // ->addActionColumn(
+        //     editRoute: $this->getEditRoute(),
+        //     deleteRoute: $this->getDestroyRoute(),
+        // )->getRow();
     }
 
     public function getAdvanceSearchFields(): array
@@ -128,12 +141,12 @@ class SizeService implements ModelViewConnector {
     public function getCreatePageData(): CreatePageData
     {
         return new CreatePageData(
-            title: 'Create Size',
+            title: 'Create AttributeValue',
             form: FormHelper::makeForm(
-                title: 'Create Size',
-                id: 'form_sizes_create',
-                action_route: 'sizes.store',
-                success_redirect_route: 'sizes.index',
+                title: 'Create AttributeValue',
+                id: 'form_attributevalues_create',
+                action_route: 'attributevalues.store',
+                success_redirect_route: 'attributevalues.index',
                 items: $this->getCreateFormElements(),
                 layout: $this->buildCreateFormLayout(),
                 label_position: 'top'
@@ -144,13 +157,13 @@ class SizeService implements ModelViewConnector {
     public function getEditPageData($id): EditPageData
     {
         return new EditPageData(
-            title: 'Edit Size',
+            title: 'Edit AttributeValue',
             form: FormHelper::makeEditForm(
-                title: 'Edit Size',
-                id: 'form_sizes_create',
-                action_route: 'sizes.update',
+                title: 'Edit AttributeValue',
+                id: 'form_attributevalues_create',
+                action_route: 'attributevalues.update',
                 action_route_params: ['id' => $id],
-                success_redirect_route: 'sizes.index',
+                success_redirect_route: 'attributevalues.index',
                 items: $this->getEditFormElements(),
                 label_position: 'top'
             ),
@@ -170,15 +183,20 @@ class SizeService implements ModelViewConnector {
 
     private function formElements(): array
     {
-       
-        return [
-            'size' => FormHelper::makeInput(
-                inputType: 'text',
-                key: 'size',
-                label: 'Size',
-                properties: ['required' => true],
-            )
-        ];
+        return [];
+        // // Example:
+        // return [
+        //     'title' => FormHelper::makeInput(
+        //         inputType: 'text',
+        //         key: 'title',
+        //         label: 'Title',
+        //         properties: ['required' => true],
+        //     ),
+        //     'description' => FormHelper::makeTextarea(
+        //         key: 'description',
+        //         label: 'Description'
+        //     ),
+        // ];
     }
 
     private function getQuery()
@@ -238,17 +256,18 @@ class SizeService implements ModelViewConnector {
 
     public function buildCreateFormLayout(): array
     {
-       
-         $layout = (new ColumnLayout())
-            ->addElements([
-                    (new RowLayout())
-                        ->addElements([
-                            (new ColumnLayout(width: '1/2'))->addInputSlot('size'),
-                            
-                        ])
-                ]
-            );
-        return $layout->getLayout();
+        return (new ColumnLayout())->getLayout();
+        // // Example
+        //  $layout = (new ColumnLayout())
+        //     ->addElements([
+        //             (new RowLayout())
+        //                 ->addElements([
+        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('title'),
+        //                     (new ColumnLayout(width: '1/2'))->addInputSlot('description'),
+        //                 ])
+        //         ]
+        //     );
+        // return $layout->getLayout();
     }
 }
 

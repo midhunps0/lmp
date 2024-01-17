@@ -8,7 +8,7 @@
 
 <section id="products" class="w-full p-24">
     <h3 class="text-center mb-12 text-dark-color text-2xl font-semibold">Currently Popular Items</h3>
-    <div class="product grid lg:grid-cols-4 gap-8 md:grid-cols-2 md:gap-x-8 ">
+    <div class="product grid lg:grid-cols-4 gap-8 md:grid-cols-2 md:gap-x-8 lg:gap-y-10 ">
         @foreach($products as $product)
         <div id="product" class="relative transition-transform duration-300 ease-in-out">
 
@@ -39,13 +39,9 @@
             </div>
 
             <div class="cart  hover:bg-green-500 flex justify-center py-2 bg-primary-color text-white transition-transform duration-300 ease-in-out transform translate-y-full absolute left-0 right-0 bottom-0 w-full opacity-0 mt-4">
-                <form action="{{ route('addToCart') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button type="submit" class="flex">
-                        <a href=""><i class="ri-shopping-cart-line pr-2 "></i></a>
-                        <p class="text-white">ADD TO CART</p>
-                    </button>
+          
+                        <a class="text-white" href="{{ route('productShow' , $product->id )}}">SEE MORE</a>
+   
                 </form>
             </div>
             <div class="product_details flex bg-white flex-col hover:shadow-md">

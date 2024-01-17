@@ -1,43 +1,56 @@
-
+<?php
 
 namespace App\Http\Controllers;
+
 use Stripe\Stripe;
 use Illuminate\Http\Request;
+use App\Models\Cart;
+use Stripe\Checkout\Session;
 
 class StripePaymentController extends Controller
 {
-    public function index(){
+  public function index()
+  {
+  }
+  public function checkout()
+  {
+    $cartItems = Cart::all(); // Adjust this based on your cart implementation
 
-    }
-    public function checkout()
-{
-   
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-  $session = Stripe::Checkout::Session.create([
-    'line_items'=>$lineItems,
-    'mode'=> 'payment',
-  
-    'success_url'=> 'https://example.com/success',
-   ' cancel_url' => 'https://example.com/cancel',
-]);
+        $lineItems = [];
 
-  redirect ($session->url);
+        foreach ($cartItems as $cartItem) {
+            $product = $cartItem->product;
+
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => $product->name,
+                    ],
+                    'unit_amount' => $product->price * 100,
+                ],
+                'quantity' => 1,
+            ];
+        }
+
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'success_url' => route('checkout.success'),
+            'cancel_url' => route('checkout.cancel'),
+        ]);
+
+        return view('checkout', ['sessionId' => $session->id]);
+  }
+  public function succes(){
+
+  }
+  public function cancel(){
+    
+  }
+
+ 
 }
-
-public function afterpayment(Request $request)
-{
-    $amount = 100;
-    $stripe = Stripe::setApiKey(env('STRIPE_SECRET'));
-
-    $charge = $stripe->charges()->create([
-        'amount' => $amount,
-        'currency' => 'USD',
-        'source' => $request->stripeToken,
-        'description' => 'Test Payment',
-        'receipt_email' => $request->email,
-    ]);
-
-    return redirect()->route('stripe.payment')->with('success', 'Payment successful!');
-}
-
-} 

@@ -1,12 +1,49 @@
-<form action="{{ route('stripe.payment') }}" method="POST">
+<h1>Checkout</h1>
+
+<form id="payment-form" action="{{ route('checkout') }}" method="post">
     @csrf
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ env('STRIPE_KEY') }}"
-        data-amount="100"
-        data-name="Stripe Payment"
-        data-description="Test Payment"
-        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-        data-locale="auto">
-    </script>
+    <div id="card-element"></div>
+    <div id="card-errors" role="alert"></div>
+    <button type="submit">Submit Payment</button>
 </form>
+
+<script>
+    var stripe = Stripe('{{ config('services.stripe.key') }}');
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
+
+    card.addEventListener('change', function (event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        stripe.createToken(card).then(function (result) {
+            if (result.error) {
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+            } else {
+                stripeTokenHandler(result.token);
+            }
+        });
+    });
+
+    function stripeTokenHandler(token) {
+        var form = document.getElementById('payment-form');
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', 'stripeToken');
+        hiddenInput.setAttribute('value', token.id);
+        form.appendChild(hiddenInput);
+
+        form.submit();
+    }
+</script>

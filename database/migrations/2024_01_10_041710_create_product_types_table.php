@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_types', function (Blueprint $table) {
             $table->id();
             $table->string('product_type');
-            $table->json('applicable_attributes');
+            $table->foreignId('attribute_id')->constrained('attributes');
             $table->text('description');
             $table->timestamps();
         });

@@ -44,17 +44,17 @@ class ProductTypeService implements ModelViewConnector {
     {
         
         return [
-            'attributes' => [
+            'attributes'=>[
                 'search_column' => 'id',
                 'filter_column' => 'id',
                 'sort_column' => 'id',
-            ],
+            ]
            
         ];
     }
     protected function getPageTitle(): string
     {
-        return "ProductTypes";
+        return "Product Types";
     }
 
     protected function getIndexHeaders(): array
@@ -64,8 +64,7 @@ class ProductTypeService implements ModelViewConnector {
             title: 'Product Type',
             sort: ['key' => 'product_type'],
         )->addHeaderColumn(
-            title: 'Applicable Attributes',
-           
+                title: 'Attributes'
         )->addHeaderColumn(
             title: 'Actions'
         )->getHeaderRow();
@@ -76,9 +75,11 @@ class ProductTypeService implements ModelViewConnector {
         
         return $this->indexTable->addColumn(
             fields: ['product_type'],
+        
         )->addColumn(
-            fields: ['applicable_attributes'],
-            relation:'attributes',
+            fields: ['attribute'],
+            relation:'attributes'
+        
         )
         ->addActionColumn(
             editRoute: $this->getEditRoute(),
@@ -173,20 +174,33 @@ class ProductTypeService implements ModelViewConnector {
 
     private function formElements(): array
     {
-        return [];
-        // // Example:
-        // return [
-        //     'title' => FormHelper::makeInput(
-        //         inputType: 'text',
-        //         key: 'title',
-        //         label: 'Title',
-        //         properties: ['required' => true],
-        //     ),
-        //     'description' => FormHelper::makeTextarea(
-        //         key: 'description',
-        //         label: 'Description'
-        //     ),
-        // ];
+    
+        return [
+            'product_type' => FormHelper::makeInput(
+                inputType: 'text',
+                key: 'product_type',
+                label: 'Product Type',
+                properties: ['required' => true],
+            ),
+            'description' => FormHelper::makeTextarea(
+                key: 'description',
+                label: 'Description'
+            ),
+            'attribute_id' => FormHelper::makeSelect(
+                key: 'attribute_id',
+                label: 'Select Attributes',
+                options: Attribute::all(),
+                options_type: 'collection',
+                options_id_key: 'id',
+                options_text_key: 'attribute',
+                options_src: [AttributeService::class, 'suggestList'],
+                properties: [
+                    'required' => true,
+                    'multiple' => true
+
+                ],
+            ),
+        ];
     }
 
     private function getQuery()
@@ -202,20 +216,21 @@ class ProductTypeService implements ModelViewConnector {
 
     public function getStoreValidationRules(): array
     {
-        return [];
-        // // Example:
-        // return [
-        //     'title' => ['required', 'string'],
-        //     'description' => ['required', 'string'],
-        // ];
+      
+        return [
+            'product_type' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'attribute_id' => ['required', 'array'],
+        ];
     }
 
     public function getUpdateValidationRules($id): array
     {
-        return [];
-        // // Example:
-        // $arr = $this->getStoreValidationRules();
-        // return $arr;
+        return [
+            'product_type' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'attribute_id' => ['required', 'array'],
+        ];
     }
 
     public function processBeforeStore(array $data): array

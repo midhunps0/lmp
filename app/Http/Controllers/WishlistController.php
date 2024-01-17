@@ -40,10 +40,10 @@ class WishlistController extends SmartController
     }
     public function addToWishlist(Request $request){
         $request->validate([
-            'product_id'=>'required|exists:products,id',
+            'product_variant_id'=>'required|exists:products,id',
         ]);
         $exsistingItem=Wishlist::where('user_id',auth()->user()->id)
-                        ->where('product_id',$request->product_id)
+                        ->where('product_variant_id',$request->product_variant_id)
                         ->first();
         if($exsistingItem){
             return redirect()->back()->with('error','Item already in the Wishlist');
@@ -53,14 +53,14 @@ class WishlistController extends SmartController
 
         $wishlist=new Wishlist;
         $wishlist->user_id=auth()->user()->id;
-        $wishlist->product_id=$request->product_id;
+        $wishlist->product_variant_id=$request->product_variant_id;
             
         $wishlist->save();
         return redirect()->back()->with('success','Item added to the wishlist');
        
     }
     public function removeWishlist(Product $product){
-        $wishlistItem=Wishlist::where('product_id',$product->id)->first();
+        $wishlistItem=Wishlist::where('product_variant_id',$product->id)->first();
         $wishlistItem->delete();
         return redirect()->back()->with('success', 'Item removed from Wishlist');
     }
